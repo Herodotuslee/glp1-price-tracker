@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mounjaro-taiwan.netlify.app/sitemap.xml
