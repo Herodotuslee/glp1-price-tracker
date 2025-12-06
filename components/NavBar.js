@@ -31,9 +31,15 @@ function Navbar() {
         <div className="nav-header-row">
           <Link href="/" className="nav-brand" onClick={closeMenu}>
             <span className="brand-icon">🍃</span>
-            <span className="brand-text">猛健樂森友會</span>
-          </Link>
 
+            <span className="ac-colored-title">
+              {"猛健樂森友會".split("").map((char, index) => (
+                <span key={index} className={`ac-char ac-char-${index % 5}`}>
+                  {char}
+                </span>
+              ))}
+            </span>
+          </Link>
           <button
             type="button"
             className="nav-toggle"

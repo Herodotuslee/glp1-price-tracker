@@ -1,12 +1,28 @@
-/* Animal Crossing Theme Variables */
-:root {
-  --ac-cream: #fffdf0;
-  --ac-green: #78b159;
-  --ac-green-dark: #5a8a3f;
-  --ac-brown: #7c6245;
-  --ac-brown-dark: #58432d;
-  --ac-yellow: #f8e286;
-  --ac-orange: #f09236;
+/* --- AC multi-colored characters --- */
+.ac-colored-title {
+  display: flex;
+  gap: 1px;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.ac-char-0 {
+  color: var(--ac-green);
+}
+.ac-char-1 {
+  color: var(--ac-yellow);
+}
+.ac-char-2 {
+  color: var(--ac-orange);
+}
+.ac-char-3 {
+  color: #72c2e9;
+}
+.ac-char-4 {
+  color: var(--ac-brown-dark);
+}
+.ac-char-5 {
+  color: var(--ac-green-dark);
 }
 
 /* Base Navbar Styles */
