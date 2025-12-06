@@ -1,0 +1,50 @@
+/* src/styles/LoadingIndicator.css */
+
+/* 定義旋轉動畫 */
+@keyframes ac-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.ac-loading-root {
+  display: flex;
+  flex-direction: column; /* 讓葉子和文字垂直排列 */
+  align-items: center;
+  justify-content: center;
+  color: #92d16c; /* 動森葉子綠 */
+  font-weight: 700;
+  font-family: "Varela Round", "Arial Rounded MT Bold", sans-serif; /* 圓體字 */
+  padding: 20px;
+}
+
+/* 這是讓組件撐滿父容器並置中的輔助 class */
+.ac-loading-root-centered {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.ac-loading-icon {
+  /* 設定大小 */
+  width: 50px;
+  height: 50px;
+  fill: currentColor;
+
+  /* 應用動畫：2秒轉一圈，無限循環 */
+  animation: ac-spin 2s linear infinite;
+
+  /* 陰影效果 */
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.1));
+
+  /* 讓葉子與文字保持一點距離 */
+  margin-bottom: 10px;
+}
+
+.ac-loading-text {
+  font-size: 1rem;
+  letter-spacing: 1px;
+}

@@ -160,9 +160,7 @@ function PricePage() {
           </p>
         </header>
 
-        <div className="info-banner warning-block">
-          <span className="icon">⚠️</span> {texts.disclaimer}
-        </div>
+        <div className="info-banner warning-block">{texts.disclaimer}</div>
 
         {loading && <LoadingIndicator centered={true} />}
         {error && <p className="status-text error">{error}</p>}
