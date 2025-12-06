@@ -1,0 +1,292 @@
+/* Animal Crossing Theme Variables */
+:root {
+  --ac-cream: #fffdf0;
+  --ac-green: #78b159;
+  --ac-green-dark: #5a8a3f;
+  --ac-brown: #7c6245;
+  --ac-brown-dark: #58432d;
+  --ac-yellow: #f8e286;
+  --ac-orange: #f09236;
+}
+
+/* Base Navbar Styles */
+.navbar {
+  background-color: var(--ac-cream);
+  border-bottom: 4px dashed var(--ac-green);
+  font-family: "Nunito", "Varela Round", system-ui, sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 0 rgba(124, 98, 69, 0.1);
+}
+
+.nav-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Header Row */
+.nav-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* 確保 Header 區域本身也是橫向排列 */
+  flex-direction: row;
+}
+
+/* --- Brand Logo (猛健樂森友) --- */
+.nav-brand {
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--ac-brown-dark);
+
+  /* ⭐ 關鍵修改：強制橫排，不換行，垂直置中 ⭐ */
+  display: flex;
+  align-items: center;
+  flex-direction: row !important; /* 強制橫排 */
+  white-space: nowrap; /* 禁止文字換行 */
+
+  gap: 8px;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s ease;
+}
+
+.nav-brand:hover {
+  transform: rotate(-2deg) scale(1.02);
+  color: var(--ac-green);
+}
+
+.brand-icon {
+  font-size: 24px;
+  display: inline-block; /* 確保 icon 不會跑版 */
+  line-height: 1; /* 修正垂直對齊 */
+}
+
+/* Main Navigation */
+.nav-main {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ac-brown);
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  background-color: var(--ac-green);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.nav-item.active {
+  background-color: var(--ac-yellow);
+  color: var(--ac-brown-dark);
+  box-shadow: 2px 2px 0 var(--ac-orange);
+  transform: rotate(1deg);
+}
+
+/* Action Buttons (LINE / Coffee) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 50px;
+  padding: 6px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+  height: 36px;
+}
+
+.nav-btn:hover {
+  transform: scale(1.05);
+}
+
+.nav-icon-img {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+}
+
+.nav-icon-emoji {
+  font-size: 18px;
+  margin-right: 6px;
+  line-height: 1;
+}
+
+/* LINE Button */
+.nav-line-link {
+  background-color: #fff;
+  border: 2px solid var(--ac-green);
+  color: var(--ac-green-dark);
+}
+
+/* Coffee Button (Bell Bag Style) */
+.nav-coffee-link {
+  background-color: var(--ac-yellow);
+  border: 2px solid var(--ac-orange);
+  color: var(--ac-brown-dark);
+  box-shadow: 0 3px 0 var(--ac-brown);
+}
+
+.nav-coffee-link:hover {
+  background-color: #ffeaa7;
+  transform: translateY(-2px) rotate(3deg);
+  box-shadow: 0 5px 0 var(--ac-brown);
+}
+
+.nav-coffee-link:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+/* Hamburger Menu */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: var(--ac-brown);
+  border-radius: 4px;
+  margin: 5px 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.nav-toggle-bar.open:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+  background: var(--ac-orange);
+}
+.nav-toggle-bar.open:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+.nav-toggle-bar.open:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+  background: var(--ac-orange);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .nav-container {
+    flex-wrap: wrap;
+  }
+  .nav-header-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .nav-toggle {
+    display: block;
+  }
+
+  /* Mobile Brand Font Size */
+  .nav-brand {
+    font-size: 19px;
+  }
+
+  /* Mobile Menu Animation */
+  .nav-main {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    padding-top: 10px;
+  }
+
+  .nav-main.open {
+    display: flex;
+    animation: slideDown 0.3s ease-out forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 16px;
+    border: 2px solid var(--ac-green);
+    box-shadow: 4px 4px 0 rgba(120, 177, 89, 0.2);
+  }
+
+  .nav-item {
+    display: block;
+    text-align: center;
+    border: 1px dashed #e5e7eb;
+  }
+
+  .nav-item:hover,
+  .nav-item.active {
+    transform: none;
+  }
+
+  /* Floating Action Buttons on Mobile */
+  .nav-actions {
+    position: fixed;
+    right: 16px;
+    bottom: 24px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    z-index: 2000;
+  }
+
+  .nav-btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    height: 40px;
+    padding: 0 16px;
+    font-size: 13px;
+    width: auto;
+  }
+
+  .nav-coffee-link {
+    border-radius: 50px;
+    border: 2px solid var(--ac-orange);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}

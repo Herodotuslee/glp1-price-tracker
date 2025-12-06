@@ -1,0 +1,151 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import "../styles/navbar.css";
+
+function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const isActive = (href, options = {}) => {
+    const { exact = false } = options;
+
+    if (exact) return pathname === href;
+    if (href === "/") return pathname === "/";
+
+    return pathname.startsWith(href);
+  };
+
+  const linkClass = (href, options) =>
+    `nav-item ${isActive(href, options) ? "active" : ""}`;
+
+  return (
+    <nav className="navbar">
+      <div className="nav-container">
+        <div className="nav-header-row">
+          <Link href="/" className="nav-brand" onClick={closeMenu}>
+            <span className="brand-icon">🍃</span>
+            <span className="brand-text">猛健樂森友會</span>
+          </Link>
+
+          <button
+            type="button"
+            className="nav-toggle"
+            aria-label="Toggle navigation menu"
+            onClick={toggleMenu}
+          >
+            <span className={`nav-toggle-bar ${isMenuOpen ? "open" : ""}`} />
+            <span className={`nav-toggle-bar ${isMenuOpen ? "open" : ""}`} />
+            <span className={`nav-toggle-bar ${isMenuOpen ? "open" : ""}`} />
+          </button>
+        </div>
+
+        <div className={`nav-main ${isMenuOpen ? "open" : ""}`}>
+          <ul className="nav-links">
+            <li>
+              <Link
+                href="/"
+                className={linkClass("/", { exact: true })}
+                onClick={closeMenu}
+              >
+                價格資訊
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/lazy"
+                className={linkClass("/lazy")}
+                onClick={closeMenu}
+              >
+                簡易攻略
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/faq"
+                className={linkClass("/faq")}
+                onClick={closeMenu}
+              >
+                常見問題
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/health"
+                className={linkClass("/health")}
+                onClick={closeMenu}
+              >
+                健康任務
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/dose"
+                className={linkClass("/dose")}
+                onClick={closeMenu}
+              >
+                劑量計算
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/threads"
+                className={linkClass("/threads")}
+                onClick={closeMenu}
+              >
+                精選文章
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/report"
+                className={linkClass("/report")}
+                onClick={closeMenu}
+              >
+                回報價格
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div className="nav-actions">
+          <a
+            href="https://line.me/ti/g2/14wNaS4K1nmA7ytMa8pgzTLuslICubxDFVdjuQ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-btn nav-line-link"
+            onClick={closeMenu}
+          >
+            <Image
+              src="image/icons8-line-me.svg"
+              alt="LINE"
+              className="nav-icon-img"
+              width={24}
+              height={24}
+            />
+            <span>加入群組</span>
+          </a>
+
+          <a
+            href="https://buymeacoffee.com/holaalbertc"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-btn nav-coffee-link"
+            onClick={closeMenu}
+          >
+            <span className="nav-icon-emoji">☕</span>
+            <span>請喝咖啡</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+export default Navbar;

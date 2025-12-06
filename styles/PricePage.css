@@ -1,0 +1,391 @@
+/* ---------- Animal Crossing Theme Variables ---------- */
+:root {
+  --ac-cream: #fffdf0;
+  --ac-cream-dark: #f0e6d2;
+  --ac-green: #78b159;
+  --ac-green-light: #e8f5e9;
+  --ac-brown: #7c6245;
+  --ac-brown-dark: #58432d;
+  --ac-yellow: #f8e286;
+  --ac-orange: #f09236;
+  --ac-teal: #2aa5a5;
+  --ac-paper: #ffffff;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --shadow-hard: 4px 4px 0 rgba(124, 98, 69, 0.15);
+}
+
+/* Page Layout */
+.price-page-root {
+  min-height: 100vh;
+  padding: 20px 16px;
+  background-color: var(--ac-cream);
+  font-family: "Nunito", "Varela Round", system-ui, sans-serif;
+  color: var(--ac-brown-dark);
+  background-image: radial-gradient(var(--ac-cream-dark) 15%, transparent 16%),
+    radial-gradient(var(--ac-cream-dark) 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+.price-page-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Header Text */
+.page-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ac-brown-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  background: var(--ac-yellow);
+  padding: 6px 20px;
+  border-radius: 999px;
+  border: 3px dashed var(--ac-orange);
+  transform: rotate(-1deg);
+}
+
+.page-subtitle-text {
+  font-size: 14px;
+  color: var(--ac-brown);
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+/* Info Banners */
+.warning-block {
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 2px dashed #e17055;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  box-shadow: var(--shadow-hard);
+}
+
+.warning-block.small {
+  background: #fff5f5;
+  padding: 10px;
+  border: 2px dashed #ffbca8;
+}
+
+/* ---------- Control Board ---------- */
+.control-card {
+  background: var(--ac-paper);
+  border-radius: var(--radius-lg);
+  padding: 20px; /* 增加 padding */
+  border: 2px solid var(--ac-green);
+  box-shadow: var(--shadow-hard);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+/* Tape Decoration */
+.control-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 50px;
+  height: 18px;
+  background: rgba(200, 200, 200, 0.4);
+  transform: translateX(-50%) rotate(1deg);
+}
+
+/* Filter Row */
+.filter-row {
+  width: 100%;
+}
+
+/* Wrap Container (The buttons) */
+.filter-wrap-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 增加間距 */
+  row-gap: 12px; /* 增加行距 */
+  align-items: center;
+  justify-content: flex-start; /* 靠左對齊 */
+}
+
+/* Filter Buttons */
+.filter-btn {
+  border-radius: 999px;
+  border: 2px solid var(--ac-green);
+  padding: 8px 16px; /* 增加一點內距讓按鈕好按 */
+  font-size: 14px;
+  font-weight: 700;
+  background: #fff;
+  color: var(--ac-green);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05); /* 微微的陰影 */
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: var(--ac-green);
+  color: #fff;
+  box-shadow: 0 2px 0 var(--ac-brown);
+  transform: translateY(0);
+}
+
+/* Search Input - 縮小寬度 */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 280px; /* 💡 限制最大寬度 */
+  margin-top: 4px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--ac-teal);
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border-radius: 999px;
+  border: 2px solid var(--ac-teal);
+  font-size: 14px;
+  font-family: inherit;
+  background: #f0fcfc;
+  outline: none;
+  color: var(--ac-brown-dark);
+  box-sizing: border-box; /* 確保 padding 不會撐爆寬度 */
+}
+
+.search-input:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(42, 165, 165, 0.15);
+}
+
+/* ---------- Mobile Cards ---------- */
+.card-list {
+  margin-top: 16px;
+}
+
+.clinic-card {
+  background: var(--ac-paper);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 4px 0 #d0d0d0;
+  position: relative;
+  overflow: hidden;
+}
+
+.clinic-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--ac-green);
+}
+
+.clinic-header {
+  margin-left: 10px;
+}
+
+.clinic-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ac-brown-dark);
+}
+
+.clinic-meta {
+  font-size: 13px;
+  color: var(--ac-brown);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------- Mobile Cards (部分更新) ---------- */
+
+/* ... 上面的 .clinic-card 樣式保持不變 ... */
+
+/* 替換原本的 .clinic-prices */
+.clinic-prices-grid {
+  margin-top: 12px;
+  margin-left: 10px; /* 與 header 對齊 */
+  display: grid;
+  /* 手機版強制雙欄，這樣比較好閱讀 */
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* 這是新的價格小卡樣式 */
+.price-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 劑量靠左，價格靠右 */
+  background: var(--ac-green-light); /* 淺綠底 */
+  border: 1px solid var(--ac-green);
+  border-radius: 8px; /*稍微圓一點，不要太圓*/
+  padding: 6px 10px;
+  font-size: 14px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* 劑量標籤 */
+.dose-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ac-green); /* 深綠色文字 */
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+  border: 1px solid rgba(120, 177, 89, 0.3);
+}
+
+/* 價格數字 */
+.price-value {
+  font-weight: 800;
+  color: var(--ac-brown-dark); /* 深咖啡色，閱讀性最高 */
+  font-family: "Nunito", sans-serif; /* 數字用英文圓體比較好看 */
+  letter-spacing: 0.5px;
+}
+
+/* ... 下面的 .clinic-note, .clinic-footer 樣式保持不變 ... */
+
+/* 針對極小螢幕的微調 (例如 iPhone SE) */
+@media (max-width: 360px) {
+  .clinic-prices-grid {
+    grid-template-columns: 1fr; /* 螢幕太小就變單欄 */
+  }
+}
+
+.price-box {
+  background: var(--ac-green-light);
+  color: var(--ac-green-dark);
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  border: 1px dashed var(--ac-green);
+}
+
+.clinic-note {
+  margin: 12px 0 0 10px;
+  background: var(--ac-cream);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px dotted var(--ac-brown);
+  font-size: 13px;
+  color: var(--ac-brown-dark);
+}
+
+.clinic-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 2px dashed #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.updated-date {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+}
+
+.clinic-edit-btn {
+  margin-left: auto;
+  background: var(--ac-yellow);
+  color: var(--ac-brown-dark);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 2px solid var(--ac-orange);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 2px 2px 0 var(--ac-brown);
+}
+
+/* ---------- Desktop Table ---------- */
+.table-card {
+  background: var(--ac-paper);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  border: 2px solid var(--ac-brown);
+  box-shadow: var(--shadow-hard);
+  overflow-x: auto;
+}
+.price-table th {
+  background: var(--ac-green);
+  color: #fff;
+  padding: 10px;
+  white-space: nowrap;
+}
+.price-table td {
+  padding: 10px;
+  border-bottom: 2px dashed #eee;
+  color: var(--ac-brown-dark);
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+}
+.modal-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  border: 4px solid var(--ac-teal);
+  box-shadow: 0 8px 0 rgba(42, 165, 165, 0.4);
+}
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .modal-grid {
+    grid-template-columns: 1fr;
+  }
+  .control-card {
+    padding: 14px;
+  }
+}

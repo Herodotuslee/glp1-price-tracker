@@ -1,0 +1,116 @@
+/* ---------- FAQ Page Styles ---------- */
+
+/* Reuse variables from PricePage.css (assuming root variables exist) */
+
+/* Loading State */
+.ac-loading {
+  text-align: center;
+  color: var(--ac-green);
+  font-weight: 700;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* ---------- FAQ Card (Details) ---------- */
+.faq-card {
+  background: #ffffff;
+  border-radius: 16px; /* Rounded corners */
+  border: 2px solid var(--ac-green); /* Green border */
+  box-shadow: 4px 4px 0 rgba(120, 177, 89, 0.2); /* Soft shadow */
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hover effect for the whole card */
+.faq-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 0 rgba(120, 177, 89, 0.3);
+}
+
+/* When open, change border style */
+.faq-card[open] {
+  border-color: var(--ac-teal);
+  box-shadow: 4px 6px 0 rgba(42, 165, 165, 0.2);
+}
+
+/* ---------- Question (Summary) ---------- */
+.faq-summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ac-brown-dark);
+  padding: 16px;
+  list-style: none; /* Remove default triangle */
+  display: flex;
+  align-items: center;
+  background: #fff;
+  transition: background 0.2s;
+}
+
+/* Remove default triangle for Webkit */
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-summary:hover {
+  background-color: var(--ac-cream);
+}
+
+/* Icon styling */
+.faq-icon {
+  margin-right: 10px;
+  font-size: 18px;
+  transition: transform 0.3s;
+}
+
+.faq-card[open] .faq-summary .faq-icon {
+  transform: rotate(45deg); /* Spin leaf when open */
+}
+
+/* ---------- Answer (Content) ---------- */
+.faq-content {
+  border-top: 2px dashed #eee;
+  background-color: var(--ac-cream); /* Light cream bg for answer */
+  padding: 16px 20px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.faq-answer {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ac-brown);
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 640px) {
+  .faq-card {
+    border-radius: 12px;
+  }
+  .faq-summary {
+    font-size: 14px;
+    padding: 14px;
+  }
+  .faq-answer {
+    font-size: 13px;
+  }
+}

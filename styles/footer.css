@@ -1,0 +1,193 @@
+/* Reuse variables from PricePage.css if available, otherwise define here */
+:root {
+  --ac-cream: #fffdf0;
+  --ac-cream-dark: #f0e6d2;
+  --ac-green: #78b159;
+  --ac-brown: #7c6245;
+  --ac-brown-dark: #58432d;
+  --ac-yellow: #f8e286;
+  --ac-orange: #f09236;
+  --ac-teal: #2aa5a5;
+}
+
+.site-footer {
+  margin-top: 60px;
+  padding: 40px 20px 24px;
+  background-color: var(--ac-cream);
+  border-top: 4px dashed var(--ac-green); /* Stitched look */
+  color: var(--ac-brown-dark);
+  font-family: "Nunito", "Varela Round", system-ui, sans-serif;
+
+  /* Polka dot pattern */
+  background-image: radial-gradient(var(--ac-cream-dark) 15%, transparent 16%),
+    radial-gradient(var(--ac-cream-dark) 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+.footer-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+  .footer-inner {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .footer-donate-card {
+    flex: 1.5;
+    margin-right: 24px;
+    margin-top: -20px; /* Slight offset for dynamic look */
+  }
+
+  .footer-main {
+    flex: 2;
+  }
+}
+
+/* ---------- Donate Card (Pinned Note Style) ---------- */
+.footer-donate-card {
+  background: #ffffff;
+  border-radius: 20px; /* Rounded corners */
+  padding: 24px 20px 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.05); /* Soft 3D shadow */
+  position: relative;
+  text-align: center;
+}
+
+/* Tape Decoration */
+.footer-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 100px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.6);
+  background-image: linear-gradient(
+    45deg,
+    rgba(200, 200, 200, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(200, 200, 200, 0.2) 50%,
+    rgba(200, 200, 200, 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 10px 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.footer-donate-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: var(--ac-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.footer-donate-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ac-brown);
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+/* Donate Button (Bouncy) */
+.footer-donate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: var(--ac-yellow);
+  color: var(--ac-brown-dark);
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+  border: 2px solid var(--ac-orange);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 3px 0 var(--ac-brown);
+}
+
+.footer-donate-button:hover {
+  transform: translateY(-2px);
+  background: #ffeaa7;
+}
+
+.footer-donate-button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.footer-donate-note {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
+/* ---------- Main Content (About) ---------- */
+.footer-main {
+  margin-bottom: 8px;
+}
+
+.footer-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: var(--ac-brown-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ac-brown);
+  margin-bottom: 16px;
+}
+
+/* Disclaimer Box */
+.footer-disclaimer-box {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px dashed #e2e8f0;
+}
+
+.footer-text-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---------- Bottom Copyright ---------- */
+.footer-bottom {
+  max-width: 960px;
+  margin: 32px auto 0;
+  padding-top: 16px;
+  border-top: 2px dashed #e2e8f0;
+  text-align: center;
+}
+
+.footer-bottom-text {
+  font-size: 13px;
+  color: var(--ac-brown);
+  font-weight: 600;
+  opacity: 0.7;
+}

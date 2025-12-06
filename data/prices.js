@@ -1,0 +1,60 @@
+// src/data/prices.js
+export const CITY_LABELS = {
+  taipei: "台北",
+  new_taipei: "新北",
+  taoyuan: "桃園",
+  taichung: "台中",
+  tainan: "台南",
+  kaohsiung: "高雄",
+  keelung: "基隆",
+  hsinchu: "新竹",
+  miaoli: "苗栗國",
+  changhua: "彰化",
+  nantou: "南投",
+  yunlin: "雲林",
+  chiayi: "嘉義",
+  pingtung: "屏東",
+  taitung: "台東",
+  hualien: "花蓮",
+  yilan: "宜蘭",
+  penghu: "澎湖",
+  kinmen: "金門",
+  lienchiang: "馬祖",
+};
+
+export const TYPE_LABELS = {
+  clinic: "診所",
+  hospital: "醫院",
+  pharmacy: "藥局",
+  medical_aesthetic: "醫美",
+};
+
+export const TYPES = ["clinic", "hospital", "pharmacy", "medical_aesthetic"];
+
+export const CITIES = [
+  "all",
+  "台北",
+  "新北",
+  "桃園",
+  "台中",
+  "台南",
+  "高雄",
+  "基隆",
+  "新竹",
+  "新竹縣",
+  "苗栗",
+  "彰化",
+  "南投",
+  "雲林",
+  "嘉義",
+  "嘉義縣",
+  "屏東",
+  "台東",
+  "花蓮",
+  "宜蘭",
+  "澎湖",
+  "金門",
+  "連江",
+  "日本",
+  "其它",
+];

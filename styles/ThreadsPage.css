@@ -1,0 +1,405 @@
+/* ---------- Threads Page Styles ---------- */
+
+/* Reuse variables from PricePage.css */
+
+/* Header Layout */
+.threads-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.threads-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Action Pill Buttons (Top Right) */
+.action-pill-btn {
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--ac-brown);
+  background: #fff;
+  color: var(--ac-brown-dark);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.action-pill-btn:hover {
+  background: var(--ac-cream);
+  transform: translateY(-1px);
+}
+
+/* ---------- Tag Filter Container ---------- */
+.tag-filter-container {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--ac-paper);
+  border: 2px dashed var(--ac-green); /* Dashed border like a sewn patch */
+}
+
+.tag-filter-label {
+  font-size: 13px;
+  color: var(--ac-brown);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Tag Chips */
+/* ---------- Tag Filter Container ---------- */
+/* ... (上方保持不變) */
+
+/* Tag Chips */
+這是一份經過整合、修正後的完整 CSS 代碼。
+
+這份代碼包含了之前所有的佈局設定，並根據您的最新要求做了以下調整：
+
+按鈕與標籤樣式「正規化」：移除了所有位移（跳動、下陷）和立體陰影特效，操作起來更穩重。
+
+高對比選中狀態：標籤選中時使用「深咖啡色底 + 白字」，確保絕對清晰。
+
+保留動森配色：維持溫暖的色調和圓角設計。
+
+您可以直接覆蓋原本的 CSS 檔案：
+
+CSS
+
+/* ---------- Threads Page Styles ---------- */
+
+/* 如果需要單獨定義變數，請取消以下註解。
+  如果已在全域或 PricePage.css 定義過，可忽略。
+*/
+:root {
+  --ac-green: #95cf95;
+  --ac-green-light: #e0f2e0;
+  --ac-green-dark: #52a352;
+  --ac-teal: #2aa5a5;
+  --ac-brown: #8c6a4a;
+  --ac-brown-light: #c49a6c;
+  --ac-brown-dark: #5e4e3e;
+  --ac-cream: #fdfce0;
+  --ac-paper: #fcfbf7;
+}
+
+/* Header Layout */
+.threads-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.threads-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Action Pill Buttons (Top Right) */
+/* 修正：去除位移特效，改為單純變色 */
+.action-pill-btn {
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--ac-brown);
+  background: #fff;
+  color: var(--ac-brown-dark);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s; /* 只過渡顏色 */
+  white-space: nowrap;
+  user-select: none;
+}
+
+.action-pill-btn:hover {
+  background: var(--ac-cream);
+  color: var(--ac-brown-dark);
+}
+
+.action-pill-btn:active {
+  background: var(--ac-brown-light);
+  color: #fff;
+  border-color: var(--ac-brown-light);
+}
+
+/* ---------- Tag Filter Container ---------- */
+.tag-filter-container {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--ac-paper);
+  border: 2px dashed var(--ac-green); /* 像補丁一樣的虛線邊框 */
+}
+
+.tag-filter-label {
+  font-size: 13px;
+  color: var(--ac-brown);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Tag Chips */
+/* 修正：去除位移特效，保留清晰度 */
+.tag-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--ac-brown-light);
+  background: #fff;
+  font-size: 13px;
+  color: var(--ac-brown-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.tag-chip:hover {
+  background: var(--ac-cream);
+  border-color: var(--ac-brown);
+}
+
+/* Tag Active State (選中狀態) */
+/* 修正：深咖啡底 + 白字，無陰影位移，確保清楚 */
+.tag-chip-active {
+  background: var(--ac-brown-dark);
+  border-color: var(--ac-brown-dark);
+  color: #fff !important;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ... (其餘 CSS 保持不變) */
+/* ---------- Threads List ---------- */
+.threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Thread Card (Accordion) */
+.thread-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 2px solid #e5e7eb;
+  padding: 12px 16px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+}
+
+.thread-card:hover {
+  border-color: var(--ac-teal);
+  transform: translateY(-1px);
+}
+
+.thread-card.open {
+  border-color: var(--ac-teal);
+  box-shadow: 0 4px 0 rgba(42, 165, 165, 0.2);
+}
+
+/* Summary Button (Header of Card) */
+.thread-summary-btn {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.thread-header-content {
+  flex: 1;
+  padding-right: 12px;
+}
+
+.thread-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: var(--ac-brown-dark);
+  line-height: 1.4;
+}
+
+/* Metadata Row (Category + Tags) */
+.thread-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.thread-category-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  color: #666;
+  font-weight: 600;
+  border: 1px solid #ddd;
+}
+
+.thread-tags-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.thread-tag-pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+
+  /* --- 修改部分 --- */
+  background: #e8f5e9; /* 改為非常淡的薄荷綠背景 */
+  color: #2e7d32; /* 文字改為深綠色，對比清晰 */
+  border: 1px solid #a5d6a7; /* 邊框稍微深一點點，增加精緻感 */
+  /* ---------------- */
+
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px; /* 稍微增加一點字距，看起來比較透氣 */
+  vertical-align: middle; /* 確保與文字對齊 */
+}
+/* Toggle Icon (+ / -) */
+.thread-toggle-icon {
+  font-size: 20px;
+  color: #ccc;
+  font-weight: 300;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.thread-toggle-icon.open {
+  color: var(--ac-teal);
+  transform: rotate(180deg);
+}
+
+/* ---------- Content Body (Expanded) ---------- */
+.thread-content-body {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px dashed #eee;
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Note Box */
+.thread-note-box {
+  padding: 12px 14px;
+  background: var(--ac-cream);
+  border-radius: 12px;
+  border: 1px dotted var(--ac-brown);
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.note-icon {
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+.note-text {
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-line;
+  color: var(--ac-brown-dark);
+}
+
+/* Description */
+.thread-description {
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-line;
+  margin-bottom: 12px;
+  color: #374151;
+}
+
+/* Source Link Button */
+.thread-link-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.thread-source-btn {
+  display: inline-flex;
+  font-size: 12px;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--ac-teal);
+  background: #fff;
+  color: var(--ac-teal);
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.thread-source-btn:hover {
+  background: var(--ac-teal);
+  color: #fff;
+}
+
+/* ---------- Footer Disclaimer ---------- */
+.threads-footer-note {
+  margin-top: 32px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 640px) {
+  .threads-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .threads-actions {
+    width: 100%;
+    justify-content: flex-start; /* Or space-between if preferred */
+    gap: 8px;
+  }
+
+  .action-pill-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}

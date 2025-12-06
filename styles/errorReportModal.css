@@ -1,0 +1,131 @@
+/* basic card tweak for the report modal */
+.report-modal-card {
+  max-width: 480px;
+}
+
+.report-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.report-modal-subtitle {
+  font-size: 13px;
+  color: #4b5563;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* form fields */
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.report-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.report-required {
+  color: #b91c1c;
+  margin-left: 2px;
+}
+
+.report-input,
+.report-textarea {
+  font-size: 14px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  resize: vertical;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  box-sizing: border-box;
+}
+
+.report-input:focus,
+.report-textarea:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 1px #0f766e20;
+}
+
+.report-help-text {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* messages */
+.report-message {
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.report-message-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.report-message-success {
+  background: #ecfdf3;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* actions */
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.report-button-primary,
+.report-button-secondary {
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
+
+.report-button-primary {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.report-button-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.report-button-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* footer link */
+.footer-report-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.footer-report-link:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
