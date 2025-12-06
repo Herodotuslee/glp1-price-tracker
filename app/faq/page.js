@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../../config/supabase";
 import texts from "../../data/texts.json";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 function FaqPage() {
   const [faqs, setFaqs] = useState([]);
@@ -41,7 +42,7 @@ function FaqPage() {
     loadFaq();
   }, []);
 
-  if (loading) return <div className="ac-loading">Loading...</div>;
+  if (loading) return <LoadingIndicator centered={true} />;
   if (error) return <div className="status-text error">{error}</div>;
 
   return (

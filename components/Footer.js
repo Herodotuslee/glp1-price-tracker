@@ -15,7 +15,7 @@ function Footer() {
             <span className="icon">🎁</span> 小額贊助
           </h3>
           <p className="footer-donate-text">
-            這個網站目前沒有廣告、沒有業配。如果這份整理讓你少踩了一些雷、少花一點智商稅，
+            這個網站目前沒有廣告、沒有業配。如果這個網站有幫到你。
             歡迎請我喝杯咖啡，讓我有動力持續更新價格與功能！
           </p>
           <a
@@ -45,7 +45,7 @@ function Footer() {
           </p>
           <div className="footer-disclaimer-box">
             <p className="footer-text-sub">
-              ⚠️ 這裡的內容由群友自發整理，僅供參考，不提供醫療診斷或治療建議；
+              ⚠️ 這裡的內容由站長自發整理，僅供參考，不提供醫療診斷或治療建議；
               所有用藥決策，請務必與合格醫師詳細討論。
             </p>
           </div>

@@ -1,4 +1,4 @@
-import "./globals.css";
+// import "./globals.css";
 import "../styles/PricePage.css";
 import "../styles/LazyPage.css";
 import "../styles/FaqPage.css";
