@@ -1,0 +1,111 @@
+/* src/styles/AdvancedPage.css */
+
+.advanced-page {
+  min-height: 100vh;
+  padding: 20px;
+  background: #f8fafc;
+}
+
+.advanced-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.advanced-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.advanced-intro {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 20px;
+}
+
+.advanced-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.advanced-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.advanced-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+/* 警語區塊 */
+.advanced-warning-box {
+  background: #fef2f2;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.advanced-warning-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+/* 單張圖片區 */
+.advanced-image-wrapper {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.advanced-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+}
+
+.advanced-image-caption {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* 圖片 grid（兩張圖並排，手機自動變成一列一張） */
+.advanced-image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.advanced-image-card {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+/* RWD：手機時改成單欄 */
+@media (max-width: 640px) {
+  .advanced-container {
+    padding: 0 4px;
+  }
+
+  .advanced-section {
+    padding: 14px;
+  }
+
+  .advanced-image-grid {
+    grid-template-columns: 1fr;
+  }
+}

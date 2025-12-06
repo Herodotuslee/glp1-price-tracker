@@ -1,0 +1,177 @@
+/* ---------- Dose Calculator Styles ---------- */
+
+/* Reuse variables from PricePage.css */
+
+/* Main Card (NookPhone App Style) */
+.calculator-card {
+  max-width: 420px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 30px; /* Rounder corners */
+  border: 4px solid var(--ac-teal); /* Signature Teal Border */
+  box-shadow: 0 10px 0 rgba(42, 165, 165, 0.3); /* 3D Shadow */
+  padding: 24px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Header */
+.calc-header {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px dashed #eee;
+  padding-bottom: 10px;
+}
+
+.calc-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ac-teal);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.calc-icon {
+  font-size: 24px;
+}
+
+/* Inputs */
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ac-brown);
+  margin-bottom: 6px;
+}
+
+.ac-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 16px;
+  border: 2px solid #ccc;
+  background: #f9f9f9;
+  color: var(--ac-brown-dark);
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.ac-input:focus {
+  border-color: var(--ac-teal);
+  background: #fff;
+  transform: scale(1.01);
+}
+
+/* Custom Select styling hack */
+.select-wrapper {
+  position: relative;
+}
+.ac-select {
+  appearance: none;
+  cursor: pointer;
+}
+.select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ac-teal);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* Action Button (Bouncy) */
+.calc-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 999px;
+  background: var(--ac-teal);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 4px 0 #1e7e7e; /* 3D effect */
+  transition: transform 0.1s;
+}
+
+.calc-button:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* Results Section */
+.results-container {
+  margin-top: 24px;
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Result Box 1: Clicks (Primary) */
+.result-box.primary {
+  background: var(--ac-green-light);
+  border: 2px dashed var(--ac-green);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.result-label {
+  font-size: 14px;
+  color: var(--ac-green-dark);
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.result-value {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--ac-green);
+}
+
+.result-unit {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Result Box 2: Uses (Secondary) */
+.result-box.secondary {
+  background: var(--ac-cream);
+  border: 1px dotted var(--ac-brown);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ac-brown);
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.highlight-text {
+  color: var(--ac-orange);
+  font-size: 18px;
+  font-weight: 800;
+}

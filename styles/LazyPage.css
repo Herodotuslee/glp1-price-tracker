@@ -1,0 +1,112 @@
+/* Reuse variables from PricePage.css */
+
+/* ---------- Card Container (Photo Frame Style) ---------- */
+.lazy-card {
+  background: #ffffff;
+  padding: 16px 16px 24px 16px; /* 底部留白像拍立得 */
+  margin-bottom: 40px;
+  border-radius: 12px; /* 圓角 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); /* 柔和陰影 */
+  position: relative;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #e5e7eb;
+
+  /* 💡 確保卡片是直的，沒有旋轉 */
+  transform: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 滑鼠移過去只會微微浮起，不會歪 */
+.lazy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Tape Decoration (紙膠帶) ---------- */
+/* 膠帶還是可以稍微歪一點點，讓畫面不會太死板，如果不喜歡可以把 rotate 去掉 */
+.tape-strip {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 100px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.6);
+  /* 斜線紋路 */
+  background-image: linear-gradient(
+    45deg,
+    rgba(200, 200, 200, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(200, 200, 200, 0.15) 50%,
+    rgba(200, 200, 200, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 10px 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  z-index: 5;
+  border-left: 2px dashed rgba(0, 0, 0, 0.05);
+  border-right: 2px dashed rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(1px);
+}
+
+/* ---------- Content Styling ---------- */
+.lazy-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lazy-card-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ac-brown-dark);
+  margin-bottom: 16px;
+  background: var(--ac-green);
+  padding: 6px 20px;
+  border-radius: 999px;
+  border: 2px dashed var(--ac-green);
+  display: inline-block;
+}
+
+.lazy-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+/* Bottom Note text */
+.lazy-note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--ac-brown);
+  background: var(--ac-cream);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px dotted var(--ac-brown);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 640px) {
+  .lazy-card {
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+
+  .tape-strip {
+    width: 80px;
+    height: 24px;
+    top: -10px;
+  }
+}
+
+/* --- 特定卡片標題配色 --- */

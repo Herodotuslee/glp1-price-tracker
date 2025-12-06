@@ -1,0 +1,10 @@
+/* 讓城市欄位不換行 */
+.table-city {
+  white-space: nowrap;
+}
+
+/* 備註欄位允許換行 */
+.table-note {
+  white-space: normal;
+  line-height: 1.5;
+}
