@@ -37,9 +37,7 @@ function HealthPage() {
         {/* --- Warning Banner --- */}
         <div className="info-banner warning-block">
           <span className="icon">⚠️</span>
-          <strong>狸克提醒：</strong>{" "}
-          以下內容僅供參考，若有特殊疾病或需求，請務必聽從醫生與營養師的專業指示
-          HOO！
+          以下內容僅供參考，若有特殊疾病或需求，請務必聽從醫生與營養師的專業指示！
         </div>
 
         {/* --- Sections Loop --- */}
