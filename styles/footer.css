@@ -1,15 +1,3 @@
-/* Reuse variables from PricePage.css if available, otherwise define here */
-:root {
-  --ac-cream: #fffdf0;
-  --ac-cream-dark: #f0e6d2;
-  --ac-green: #78b159;
-  --ac-brown: #7c6245;
-  --ac-brown-dark: #58432d;
-  --ac-yellow: #f8e286;
-  --ac-orange: #f09236;
-  --ac-teal: #2aa5a5;
-}
-
 .site-footer {
   margin-top: 60px;
   padding: 40px 20px 24px;
