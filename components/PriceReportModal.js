@@ -2,9 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../config/supabase";
 import { CITY_LABELS, TYPE_LABELS } from "../data/prices";
-import "../styles/PriceReportModal.css";
-// Ensure global theme variables are available if not imported in index.js
-import "../styles/PricePage.css";
 
 // Convert empty string to number or null
 const toNullableInt = (value) => {

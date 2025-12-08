@@ -14,6 +14,11 @@ import {
   matchesKeyword,
   toNullableInt,
 } from "@/utils/priceHelpers";
+import "@/styles/PricePage.css";
+import "@/styles/PriceTable.css";
+import "@/styles/PriceCardList.css";
+import "@/styles/PriceReportModal.css";
+
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 function PricePage() {

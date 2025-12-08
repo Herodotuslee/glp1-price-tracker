@@ -109,10 +109,13 @@
   white-space: nowrap;
 }
 
-.nav-item:hover {
-  background-color: var(--ac-green);
-  color: #fff;
-  transform: translateY(-2px);
+/* Apply hover effects *only* when device actually supports hover */
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover {
+    background-color: var(--ac-green);
+    color: #fff;
+    transform: translateY(-2px);
+  }
 }
 
 .nav-item.active {
