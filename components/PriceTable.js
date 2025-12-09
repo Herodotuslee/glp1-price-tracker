@@ -1,3 +1,4 @@
+// src/components/PriceTable.js
 import React from "react";
 
 function formatLastUpdated(value) {
@@ -56,9 +57,7 @@ function PriceTable({ data, showAllDoses, onOpenReport }) {
           <tbody>
             {data.map((row) => (
               <tr key={row.id}>
-                <td className="col-city" style={{ fontWeight: 700 }}>
-                  {row.city}
-                </td>
+                <td className="col-city">{row.city}</td>
 
                 <td className="col-district">{row.district}</td>
 
@@ -73,7 +72,7 @@ function PriceTable({ data, showAllDoses, onOpenReport }) {
                   {row.clinic}
                 </td>
 
-                <td style={{ fontSize: "13px", color: "#666" }}>
+                <td className="col-type">
                   {row.type === "hospital"
                     ? "醫院"
                     : row.type === "pharmacy"
@@ -83,23 +82,19 @@ function PriceTable({ data, showAllDoses, onOpenReport }) {
 
                 {showAllDoses ? (
                   <>
-                    <td>{row.price2_5mg || "-"}</td>
-                    <td>{row.price5mg || "-"}</td>
-                    <td>{row.price7_5mg || "-"}</td>
-                    <td>{row.price10mg || "-"}</td>
-                    <td>{row.price12_5mg || "-"}</td>
-                    <td>{row.price15mg || "-"}</td>
+                    <td className="price-value">{row.price2_5mg || "-"}</td>
+                    <td className="price-value">{row.price5mg || "-"}</td>
+                    <td className="price-value">{row.price7_5mg || "-"}</td>
+                    <td className="price-value">{row.price10mg || "-"}</td>
+                    <td className="price-value">{row.price12_5mg || "-"}</td>
+                    <td className="price-value">{row.price15mg || "-"}</td>
                   </>
                 ) : (
                   <>
-                    <td
-                      style={{ fontWeight: 700, color: "var(--ac-green-dark)" }}
-                    >
+                    <td className="col-price-highlight price-value">
                       {row.price5mg || "-"}
                     </td>
-                    <td
-                      style={{ fontWeight: 700, color: "var(--ac-green-dark)" }}
-                    >
+                    <td className="col-price-highlight price-value">
                       {row.price10mg || "-"}
                     </td>
                   </>
@@ -117,13 +112,7 @@ function PriceTable({ data, showAllDoses, onOpenReport }) {
                   </button>
                 </td>
 
-                <td
-                  style={{
-                    fontSize: "12px",
-                    color: "#777",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <td className="col-updated">
                   {row.last_updated ? formatLastUpdated(row.last_updated) : ""}
                 </td>
               </tr>

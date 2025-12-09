@@ -42,7 +42,7 @@ export const metadata = {
   openGraph: {
     title: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     description:
-      "全台猛健樂 / Zepbound 價格查詢、劑量計算器、FAQ、醫師文章與健康任務。",
+      "全台猛健樂(Mounjaro) 價格查詢、劑量計算器、FAQ、醫師文章與健康任務。",
     url: "https://mounjaro-taiwan.netlify.app",
     siteName: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     images: [

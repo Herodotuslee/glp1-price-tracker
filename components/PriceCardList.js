@@ -1,6 +1,5 @@
 // src/components/PriceCardList.js
 import React from "react";
-import "../styles/PricePage.css";
 
 function PriceCardList({ data, showAllDoses, onOpenReport }) {
   if (!data || data.length === 0) {
@@ -11,7 +10,6 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
     );
   }
 
-  // 提取一個小組件或是 helper function 來渲染單個價格項目，讓程式碼更乾淨
   const renderPriceItem = (dose, price) => {
     if (!price || price <= 0) return null;
     return (
@@ -42,7 +40,6 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
           {/* Prices Grid - 結構改為 Grid */}
           <div className="clinic-prices-grid">
             {showAllDoses ? (
-              // 顯示所有劑量
               <>
                 {renderPriceItem("2.5mg", row.price2_5mg)}
                 {renderPriceItem("5mg", row.price5mg)}
@@ -52,7 +49,6 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
                 {renderPriceItem("15mg", row.price15mg)}
               </>
             ) : (
-              // 只顯示常見劑量
               <>
                 {renderPriceItem("5mg", row.price5mg)}
                 {renderPriceItem("10mg", row.price10mg)}

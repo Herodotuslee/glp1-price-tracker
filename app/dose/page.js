@@ -4,47 +4,62 @@ import text from "../../data/texts.json";
 
 const PEN_OPTIONS = [2.5, 5, 7.5, 10, 12.5, 15];
 
+// --- Format number: keep up to 2 decimals but remove trailing zeros ---
+const formatNumber = (num) => {
+  if (typeof num !== "number") return "";
+  return parseFloat(num.toFixed(2)).toString();
+};
+
 function DoseCalculatorPage() {
   const [penStrength, setPenStrength] = useState(10); // mg
-  const [dose, setDose] = useState(5); // mg
+  const [dose, setDose] = useState(""); // mg
   const [clicks, setClicks] = useState(null);
   const [totalUses, setTotalUses] = useState(null);
 
-  // Handle user input for dose
   const handleDoseInput = (value) => {
     const num = Number(value);
+
     if (num <= 0 || Number.isNaN(num)) {
       setDose("");
+      setClicks(null);
+      setTotalUses(null);
       return;
     }
-    // Prevent dose from exceeding pen strength
-    const safeValue = Math.min(num, penStrength);
-    setDose(safeValue);
+
+    setDose(num);
+
+    setClicks(null);
+    setTotalUses(null);
   };
 
-  // Perform calculation
   const calculate = () => {
     if (!penStrength || !dose) return;
 
-    // Formula: (Dose * 60) / PenStrength = Clicks
-    const raw = (dose * 60) / penStrength;
-    const rounded = Math.round(raw);
+    let raw = (dose * 60) / penStrength;
 
-    // Total available mg in pen = Strength * 4 doses (standard Mounjaro pens)
     const totalAvailable = penStrength * 4;
-    // Calculate how many times this specific dose can be used
-    const uses = Math.floor(totalAvailable / dose);
+    const uses = totalAvailable / dose;
 
-    setClicks(rounded);
+    setClicks(raw);
     setTotalUses(uses);
   };
+
+  const getDecimalPart = (num) => {
+    if (typeof num !== "number") return null;
+
+    const frac = num - Math.floor(num);
+    const rounded = Number(frac.toFixed(2));
+
+    if (rounded <= 0 || rounded >= 1) return null;
+    return rounded;
+  };
+
+  const decimalPart = clicks !== null ? getDecimalPart(clicks) : null;
 
   return (
     <div className="price-page-root">
       <div className="price-page-inner">
-        {/* --- Main Card Container --- */}
         <div className="calculator-card">
-          {/* Header */}
           <div className="calc-header">
             <h1 className="calc-title">
               <span className="calc-icon">🧮</span> 劑量計算器
@@ -60,8 +75,9 @@ function DoseCalculatorPage() {
                 onChange={(e) => {
                   const newStrength = Number(e.target.value);
                   setPenStrength(newStrength);
-                  // Reset dose if it exceeds new pen strength
-                  if (dose > newStrength) setDose(newStrength);
+
+                  setClicks(null);
+                  setTotalUses(null);
                 }}
                 className="ac-input ac-select"
               >
@@ -84,7 +100,6 @@ function DoseCalculatorPage() {
               value={dose}
               onChange={(e) => handleDoseInput(e.target.value)}
               className="ac-input"
-              placeholder="0"
             />
           </div>
 
@@ -93,22 +108,36 @@ function DoseCalculatorPage() {
             開始計算
           </button>
 
-          {/* Results Area */}
+          {/* Results */}
           {clicks !== null && (
             <div className="results-container">
-              {/* Primary Result: Clicks */}
+              {/* 格數 */}
               <div className="result-box primary">
                 <p className="result-label">請轉動筆身</p>
                 <div className="result-value">
-                  {clicks} <span className="result-unit">格</span>
+                  {formatNumber(clicks)} <span className="result-unit">格</span>
                 </div>
               </div>
 
-              {/* Secondary Result: Total Uses */}
+              {/* 小數格數提醒 */}
+              {decimalPart !== null && (
+                <div
+                  className="info-banner warning-block"
+                  style={{ marginTop: "16px" }}
+                >
+                  ⚠️ 計算結果不是整數格數。
+                  <br />
+                  筆身無法轉出 <strong>{formatNumber(decimalPart)} 格</strong>
+                  ，請自行判斷是否要調整為整數格數。
+                </div>
+              )}
+
+              {/* 次數 */}
               <div className="result-box secondary">
                 一支全新的 {penStrength} mg 筆<br />
-                預計可施打 <span className="highlight-text">
-                  {totalUses}
+                估計可施打{" "}
+                <span className="highlight-text">
+                  {formatNumber(totalUses)}
                 </span>{" "}
                 次 {dose} mg
               </div>
@@ -116,7 +145,7 @@ function DoseCalculatorPage() {
           )}
         </div>
 
-        {/* --- Warning Banner --- */}
+        {/* Warning Banner */}
         <div
           className="info-banner warning-block"
           style={{
