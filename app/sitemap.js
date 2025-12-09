@@ -11,3 +11,4 @@ export default function sitemap() {
     { url: `${base}/threads`, lastModified: new Date() },
   ];
 }
+sitemap.js;
