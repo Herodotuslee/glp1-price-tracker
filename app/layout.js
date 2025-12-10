@@ -15,7 +15,7 @@ import Footer from "../components/Footer";
 import "./globals.css";
 
 export const metadata = {
-  metadataBase: new URL("https://mounjaro-taiwan.netlify.app"),
+  metadataBase: new URL("https://www.glp-1-taiwan.com/"),
   title: {
     default: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     template: "%s｜台灣猛健樂資訊網",
@@ -43,7 +43,7 @@ export const metadata = {
     title: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     description:
       "全台猛健樂(Mounjaro) 價格查詢、劑量計算器、FAQ、醫師文章與健康任務。",
-    url: "https://mounjaro-taiwan.netlify.app",
+    url: "https://www.glp-1-taiwan.com/",
     siteName: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     images: [
       {
