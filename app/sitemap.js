@@ -1,4 +1,6 @@
 // app/sitemap.js
+export const dynamic = "force-static";
+
 export default function sitemap() {
   const base = "https://mounjaro-taiwan.netlify.app";
 
@@ -11,4 +13,3 @@ export default function sitemap() {
     { url: `${base}/threads`, lastModified: new Date() },
   ];
 }
-sitemap.js;
