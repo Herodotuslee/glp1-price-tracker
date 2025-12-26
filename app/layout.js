@@ -19,6 +19,10 @@ export const metadata = {
   alternates: {
     canonical: "https://www.glp-1-taiwan.com/",
   },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   title: {
     default: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     template: "%s｜台灣猛健樂資訊網",
