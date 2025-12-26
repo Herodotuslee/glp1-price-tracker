@@ -13,6 +13,9 @@ const toNullableInt = (value) => {
 function PriceReportModal({ target, onClose }) {
   // Local editable fields
   const [district, setDistrict] = useState("");
+  const [type, setType] = useState("clinic");
+  const [address, setAddress] = useState("");
+
   const [price2_5, setPrice2_5] = useState("");
   const [price5, setPrice5] = useState("");
   const [price7_5, setPrice7_5] = useState("");
@@ -27,7 +30,17 @@ function PriceReportModal({ target, onClose }) {
   // refill when target changes
   useEffect(() => {
     if (!target) return;
+
     setDistrict(target.district ?? "");
+    setAddress(target.address ?? "");
+
+    // English comment: normalize type for select
+    const normalizedType = (target.type || "clinic")
+      .toString()
+      .trim()
+      .toLowerCase();
+    setType(normalizedType || "clinic");
+
     setPrice2_5(target.price2_5mg ?? "");
     setPrice5(target.price5mg ?? "");
     setPrice7_5(target.price7_5mg ?? "");
@@ -35,6 +48,7 @@ function PriceReportModal({ target, onClose }) {
     setPrice12_5(target.price12_5mg ?? "");
     setPrice15(target.price15mg ?? "");
     setNote(target.note ?? "");
+
     setError(null);
     setSubmitting(false);
   }, [target]);
@@ -42,10 +56,10 @@ function PriceReportModal({ target, onClose }) {
   if (!target) return null;
 
   const cityLabel = CITY_LABELS[target.city] || target.city || "-";
+
   const typeLabel =
-    TYPE_LABELS[
-      (target.type || "").toString().trim().toLowerCase() || "clinic"
-    ] || "診所";
+    TYPE_LABELS[(type || "").toString().trim().toLowerCase() || "clinic"] ||
+    "診所";
 
   // click backdrop = close
   const handleBackdropClick = (e) => {
@@ -79,7 +93,13 @@ function PriceReportModal({ target, onClose }) {
         city: target.city,
         district: district || target.district || null,
         clinic: target.clinic,
-        type: target.type || "clinic",
+
+        // English comment: allow user to update address (optional)
+        address: address || target.address || null,
+
+        // English comment: allow user to choose type
+        type: (type || target.type || "clinic").toString().trim().toLowerCase(),
+
         is_cosmetic: target.is_cosmetic ?? false,
 
         price2_5mg: toNullableInt(price2_5),
@@ -124,6 +144,7 @@ function PriceReportModal({ target, onClose }) {
     <div className="modal-backdrop" onClick={handleBackdropClick}>
       <div className="modal-card">
         <h2 className="modal-title">📝 價格回報單</h2>
+
         {/* Low-key clinic info line */}
         <p
           style={{
@@ -135,13 +156,13 @@ function PriceReportModal({ target, onClose }) {
             fontWeight: "600",
           }}
         >
-          {cityLabel} / {target.district || "-"} / {target.clinic}（{typeLabel}
-          ）
+          {cityLabel} / {district || target.district || "-"} / {target.clinic}（
+          {typeLabel}）
         </p>
 
         {/* ---------------- Form ---------------- */}
         <form onSubmit={handleSubmit}>
-          {/* District */}
+          {/* District + Type */}
           <div className="modal-row-2">
             <div className="modal-field">
               <label className="modal-label">📍 地區（選填）</label>
@@ -153,6 +174,31 @@ function PriceReportModal({ target, onClose }) {
                 placeholder="例如：信義區"
               />
             </div>
+
+            <div className="modal-field">
+              <label className="modal-label">🏥 類型</label>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="modal-input"
+              >
+                <option value="clinic">診所</option>
+                <option value="hospital">醫院</option>
+                <option value="pharmacy">藥局</option>
+                <option value="medical_aesthetic">醫美</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Address (optional) */}
+          <div className="modal-field" style={{ marginTop: "10px" }}>
+            <label className="modal-label">🏠 地址（選填）</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="modal-input"
+            />
           </div>
 
           {/* Price Section Title */}

@@ -127,3 +127,37 @@
     font-size: 13px;
   }
 }
+
+/* Clinic name cell layout (keeps table row height stable) */
+.clinic-name-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.clinic-name-text {
+  display: inline-block;
+  min-width: 0;
+}
+/* Minimal info icon button (no themed styling) */
+.clinic-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  background: transparent;
+  border: none;
+  color: var(--ac-brown-dark, #4b5563);
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+
+.clinic-info-btn:hover {
+  color: var(--ac-green, #059669);
+}
+
+.clinic-info-btn:active {
+  transform: scale(0.95);
+}

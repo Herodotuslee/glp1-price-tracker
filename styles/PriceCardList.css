@@ -1,4 +1,6 @@
-/* No data */
+/* =========================
+   No data
+   ========================= */
 .no-data-card {
   background: var(--ac-paper);
   border-radius: 16px;
@@ -9,12 +11,23 @@
   margin-top: 16px;
 }
 
-/* ---------- Mobile Cards Container ---------- */
+/* =========================
+   Cards Container (SCROLL KEY)
+   ========================= */
 .card-list {
   margin-top: 16px;
+
+  /* 🔑 Scroll must live here */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* 🔑 Prevent browser from treating vertical scroll as tap */
+  touch-action: pan-y;
 }
 
-/* ---------- Clinic Card ---------- */
+/* =========================
+   Clinic Card
+   ========================= */
 .clinic-card {
   background: var(--ac-paper);
   border-radius: 20px;
@@ -23,7 +36,12 @@
   border: 2px solid #e0e0e0;
   box-shadow: 0 4px 0 #d0d0d0;
   position: relative;
-  overflow: hidden;
+
+  /* 🔑 DO NOT use overflow hidden on scrollable children */
+  overflow: visible;
+
+  /* 🔑 Prevent gesture hijacking */
+  touch-action: pan-y;
 }
 
 /* Left colored bar */
@@ -35,11 +53,18 @@
   bottom: 0;
   width: 6px;
   background: var(--ac-green);
+  border-radius: 20px 0 0 20px;
 }
 
-/* Header */
+/* =========================
+   Header
+   ========================= */
 .clinic-header {
   margin-left: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .clinic-name {
@@ -58,12 +83,42 @@
   gap: 6px;
 }
 
-/* ---------- Prices grid ---------- */
+/* =========================
+   Detail icon button (ⓘ)
+   ========================= */
+.clinic-detail-icon-btn {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: var(--ac-brown);
+  font-weight: 900;
+
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 🔑 Avoid accidental scroll blocking */
+  touch-action: manipulation;
+}
+
+.clinic-detail-icon-btn:active {
+  transform: translateY(1px);
+}
+
+/* =========================
+   Prices grid
+   ========================= */
 .clinic-prices-grid {
   margin-top: 12px;
   margin-left: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Always 2-column mobile */
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
@@ -90,14 +145,16 @@
   border: 1px solid rgba(120, 177, 89, 0.3);
 }
 
-/* Adjust for tiny screens */
+/* Tiny screens */
 @media (max-width: 360px) {
   .clinic-prices-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* ---------- Notes ---------- */
+/* =========================
+   Notes
+   ========================= */
 .clinic-note {
   margin: 12px 0 0 10px;
   background: var(--ac-cream);
@@ -106,13 +163,18 @@
   border: 1px dotted var(--ac-brown);
   font-size: 13px;
   color: var(--ac-brown-dark);
+
+  /* 🔑 Text areas should not eat scroll */
+  touch-action: pan-y;
 }
 
 .note-icon {
   margin-right: 4px;
 }
 
-/* ---------- Footer ---------- */
+/* =========================
+   Footer
+   ========================= */
 .clinic-footer {
   margin-top: 12px;
   padding-top: 10px;
@@ -128,7 +190,9 @@
   font-weight: 600;
 }
 
-/* Update button */
+/* =========================
+   Update button
+   ========================= */
 .clinic-edit-btn {
   margin-left: auto;
   background: var(--ac-yellow);
@@ -138,11 +202,16 @@
   font-size: 12px;
   font-weight: 700;
   border: 2px solid var(--ac-orange);
+
   display: inline-flex;
   align-items: center;
   gap: 4px;
+
   box-shadow: 2px 2px 0 var(--ac-brown);
   cursor: pointer;
+
+  /* 🔑 Buttons should not block scroll */
+  touch-action: manipulation;
 }
 
 .clinic-edit-btn:hover {
