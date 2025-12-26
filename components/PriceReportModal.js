@@ -14,6 +14,7 @@ function PriceReportModal({ target, onClose }) {
   // Local editable fields
   const [district, setDistrict] = useState("");
   const [type, setType] = useState("clinic");
+  const [address, setAddress] = useState("");
 
   const [price2_5, setPrice2_5] = useState("");
   const [price5, setPrice5] = useState("");
@@ -31,6 +32,7 @@ function PriceReportModal({ target, onClose }) {
     if (!target) return;
 
     setDistrict(target.district ?? "");
+    setAddress(target.address ?? "");
 
     // English comment: normalize type for select
     const normalizedType = (target.type || "clinic")
@@ -91,6 +93,9 @@ function PriceReportModal({ target, onClose }) {
         city: target.city,
         district: district || target.district || null,
         clinic: target.clinic,
+
+        // English comment: allow user to update address (optional)
+        address: address || target.address || null,
 
         // English comment: allow user to choose type
         type: (type || target.type || "clinic").toString().trim().toLowerCase(),
@@ -183,6 +188,17 @@ function PriceReportModal({ target, onClose }) {
                 <option value="medical_aesthetic">醫美</option>
               </select>
             </div>
+          </div>
+
+          {/* Address (optional) */}
+          <div className="modal-field" style={{ marginTop: "10px" }}>
+            <label className="modal-label">🏠 地址（選填）</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="modal-input"
+            />
           </div>
 
           {/* Price Section Title */}
