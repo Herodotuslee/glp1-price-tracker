@@ -1,6 +1,7 @@
 // src/components/PriceCardList.js
 import React, { useState } from "react";
 import ClinicDetailModal from "@/components/ClinicDetailModal";
+import { Info } from "lucide-react";
 
 function PriceCardList({ data, showAllDoses, onOpenReport }) {
   const [detailOpen, setDetailOpen] = useState(false);
@@ -59,12 +60,12 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
               {/* Detail icon button (clear affordance, minimal UI) */}
               <button
                 type="button"
-                className="clinic-detail-icon-btn"
+                className="clinic-info-btn"
                 onClick={() => openDetailByRow(row)}
                 aria-label="查看診所詳細資訊"
                 title="查看詳情"
               >
-                ⓘ
+                <Info size={16} strokeWidth={2} />
               </button>
             </div>
 
