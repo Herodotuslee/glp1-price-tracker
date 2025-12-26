@@ -135,7 +135,7 @@ function DoseCalculatorPage() {
               {/* 次數 */}
               <div className="result-box secondary">
                 一支全新的 {penStrength} mg 筆<br />
-                估計可施打{" "}
+                若不包含殘劑估計可施打{" "}
                 <span className="highlight-text">
                   {formatNumber(totalUses)}
                 </span>{" "}
