@@ -1,3 +1,4 @@
+// src/pages/PricePage.js
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -7,6 +8,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/config/supabase";
 import PriceReportModal from "@/components/PriceReportModal";
 import PriceTable from "@/components/PriceTable";
 import PriceCardList from "@/components/PriceCardList";
+import ClinicDetailModal from "@/components/ClinicDetailModal";
 import useIsMobile from "@/hooks/useIsMobile";
 import {
   cityMatchesSelected,
@@ -18,7 +20,7 @@ import "@/styles/PricePage.css";
 import "@/styles/PriceTable.css";
 import "@/styles/PriceCardList.css";
 import "@/styles/PriceReportModal.css";
-
+import "@/styles/ClinicDetailModal.css";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 function PricePage() {
@@ -45,13 +47,19 @@ function PricePage() {
   const [reportPrice15, setReportPrice15] = useState("");
   const [reportNote, setReportNote] = useState("");
 
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailClinicId, setDetailClinicId] = useState(null);
+
   const isMobile = useIsMobile(640);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchData() {
       try {
         setLoading(true);
         setError(null);
+
         const url = `${SUPABASE_URL}/rest/v1/mounjaro_data?select=*`;
         const res = await fetch(url, {
           headers: {
@@ -59,17 +67,24 @@ function PricePage() {
             Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           },
         });
+
         if (!res.ok) throw new Error("Network response was not ok");
         const data = await res.json();
-        setRows(data || []);
+
+        if (!cancelled) setRows(data || []);
       } catch (err) {
         console.error(err);
-        setError("載入失敗... 請檢查網路連線後再試一次！");
+        if (!cancelled) setError("載入失敗... 請檢查網路連線後再試一次！");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
+
     fetchData();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const cityOptions = useMemo(() => {
@@ -109,12 +124,24 @@ function PricePage() {
     setReportSubmitting(false);
   };
 
+  const openClinicDetail = (clinicId) => {
+    setDetailClinicId(clinicId);
+    setDetailOpen(true);
+  };
+
+  const closeClinicDetail = () => {
+    setDetailOpen(false);
+    setDetailClinicId(null);
+  };
+
   const handleSubmitReport = async (e) => {
     e.preventDefault();
     if (!reportTarget) return;
+
     try {
       setReportSubmitting(true);
       setReportError(null);
+
       const url = `${SUPABASE_URL}/rest/v1/mounjaro_reports`;
       const body = {
         city: reportTarget.city,
@@ -130,6 +157,7 @@ function PricePage() {
         note: reportNote || null,
         last_updated: new Date().toISOString().slice(0, 10),
       };
+
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -140,7 +168,9 @@ function PricePage() {
         },
         body: JSON.stringify(body),
       });
+
       if (!res.ok) throw new Error("Submit failed");
+
       alert("🎉 回報成功！非常感謝你的熱心幫忙！");
       closeReportModal();
     } catch (err) {
@@ -195,6 +225,7 @@ function PricePage() {
               >
                 全部類型
               </button>
+
               {TYPES.map((t) => (
                 <button
                   key={t}
@@ -257,6 +288,7 @@ function PricePage() {
                 data={filteredData}
                 showAllDoses={showAllDoses}
                 onOpenReport={openReportModal}
+                onOpenClinicDetail={openClinicDetail}
               />
             ) : (
               <PriceTable
@@ -293,6 +325,12 @@ function PricePage() {
             setReportNote={setReportNote}
           />
         )}
+
+        <ClinicDetailModal
+          open={detailOpen}
+          clinicId={detailClinicId}
+          onClose={closeClinicDetail}
+        />
       </div>
     </div>
   );
