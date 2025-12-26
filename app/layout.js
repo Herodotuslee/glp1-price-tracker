@@ -1,4 +1,7 @@
+// app/layout.js
+
 import "./globals.css";
+
 import "../styles/PricePage.css";
 import "../styles/LazyPage.css";
 import "../styles/FaqPage.css";
@@ -11,11 +14,11 @@ import "../styles/ReportPriceFormPage.css";
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
 
-// app/layout.js
-import "./globals.css";
-
 export const metadata = {
-  metadataBase: new URL("https://www.glp-1-taiwan.com/"),
+  metadataBase: new URL("https://www.glp-1-taiwan.com"),
+  alternates: {
+    canonical: "https://www.glp-1-taiwan.com/",
+  },
   title: {
     default: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     template: "%s｜台灣猛健樂資訊網",
@@ -24,25 +27,25 @@ export const metadata = {
     google: "taKJMmSFvJl2KEpQhzJEiCEtRdrV_mdCnviuStSON8Q",
   },
   description:
-    "猛健樂（Mounjaro）自費價格查詢網站。整理各縣市診所費用、劑量計算器、RPG健康任務、FAQ、Threads 精選醫師文章。",
+    "猛健樂（Mounjaro）自費價格查詢網站。整理各縣市診所費用、劑量計算器、RPG 健康任務、FAQ、Threads 精選醫師文章。",
   keywords: [
     "Mounjaro",
     "猛健樂",
     "Zepbound",
-    "減肥針",
+    "減肥",
+    "減脂",
     "瘦瘦筆",
-    "glp-1",
+    "GLP-1",
     "台灣",
     "價格查詢",
     "自費",
     "診所",
     "tirzepatide",
   ],
-
   openGraph: {
     title: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     description:
-      "全台猛健樂(Mounjaro) 價格查詢、劑量計算器、FAQ、醫師文章與健康任務。",
+      "全台猛健樂（Mounjaro）價格查詢、劑量計算器、FAQ、醫師文章與健康任務。",
     url: "https://www.glp-1-taiwan.com/",
     siteName: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     images: [
@@ -56,14 +59,12 @@ export const metadata = {
     locale: "zh_TW",
     type: "website",
   },
-
   twitter: {
     card: "summary_large_image",
     title: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
     description: "全台診所資訊與自費價格公開透明。",
     images: ["/og-image.png"],
   },
-
   icons: {
     icon: "/favicon.ico",
   },
