@@ -34,6 +34,32 @@ function PricePage() {
 
   const [showAllDoses, setShowAllDoses] = useState(false);
 
+  // ---------- SORT ----------
+  const [sortKey, setSortKey] = useState("min"); // min | price5mg | price10mg
+  const [sortDir, setSortDir] = useState("asc"); // asc | desc
+
+  // ---------- SORT WARNING MODAL ----------
+  const [showSortWarning, setShowSortWarning] = useState(false);
+  const [pendingSort, setPendingSort] = useState(null); // { key: "price5mg"|"price10mg"|"min", dir:"asc"|"desc" }
+
+  const requestSort = (key, dir = "asc") => {
+    setPendingSort({ key, dir });
+    setShowSortWarning(true);
+  };
+
+  const confirmSort = () => {
+    if (!pendingSort) return;
+    setSortKey(pendingSort.key);
+    setSortDir(pendingSort.dir);
+    setShowSortWarning(false);
+    setPendingSort(null);
+  };
+
+  const cancelSort = () => {
+    setShowSortWarning(false);
+    setPendingSort(null);
+  };
+
   const [reportTarget, setReportTarget] = useState(null);
   const [reportSubmitting, setReportSubmitting] = useState(false);
   const [reportError, setReportError] = useState(null);
@@ -52,6 +78,7 @@ function PricePage() {
 
   const isMobile = useIsMobile(640);
 
+  // ---------- FETCH ----------
   useEffect(() => {
     let cancelled = false;
 
@@ -60,33 +87,34 @@ function PricePage() {
         setLoading(true);
         setError(null);
 
-        const url = `${SUPABASE_URL}/rest/v1/mounjaro_data?select=*`;
-        const res = await fetch(url, {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        });
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/mounjaro_data?select=*`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          }
+        );
 
-        if (!res.ok) throw new Error("Network response was not ok");
+        if (!res.ok) throw new Error("Network error");
         const data = await res.json();
-
         if (!cancelled) setRows(data || []);
       } catch (err) {
         console.error(err);
-        if (!cancelled) setError("載入失敗... 請檢查網路連線後再試一次！");
+        if (!cancelled) setError("載入失敗，請稍後再試");
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
     fetchData();
-
     return () => {
       cancelled = true;
     };
   }, []);
 
+  // ---------- CITY OPTIONS ----------
   const cityOptions = useMemo(() => {
     const uniqueCities = Array.from(
       new Set(rows.map((r) => r.city).filter(Boolean))
@@ -94,17 +122,53 @@ function PricePage() {
     return ["all", ...uniqueCities];
   }, [rows]);
 
-  const filteredData = useMemo(
-    () =>
-      rows.filter((row) => {
-        const cityOk = cityMatchesSelected(row.city, selectedCity);
-        const typeOk = typeMatchesSelected(row.type, selectedType);
-        const kwOk = matchesKeyword(row, keyword);
-        return cityOk && typeOk && kwOk;
-      }),
-    [rows, selectedCity, selectedType, keyword]
-  );
+  // ---------- SORT HELPER ----------
+  const getSortValue = (row) => {
+    const n = (v) => (typeof v === "number" ? v : v == null ? null : Number(v));
 
+    if (sortKey === "price5mg") return n(row.price5mg);
+    if (sortKey === "price10mg") return n(row.price10mg);
+
+    const prices = [
+      n(row.price2_5mg),
+      n(row.price5mg),
+      n(row.price7_5mg),
+      n(row.price10mg),
+      n(row.price12_5mg),
+      n(row.price15mg),
+    ].filter((v) => Number.isFinite(v));
+
+    return prices.length ? Math.min(...prices) : null;
+  };
+
+  // ---------- FILTER + SORT ----------
+  const filteredAndSortedData = useMemo(() => {
+    const filtered = rows.filter((row) => {
+      return (
+        cityMatchesSelected(row.city, selectedCity) &&
+        typeMatchesSelected(row.type, selectedType) &&
+        matchesKeyword(row, keyword)
+      );
+    });
+
+    const dir = sortDir === "asc" ? 1 : -1;
+
+    return filtered.slice().sort((a, b) => {
+      const av = getSortValue(a);
+      const bv = getSortValue(b);
+
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+
+      return (a.clinic || "").localeCompare(b.clinic || "", "zh-Hant");
+    });
+  }, [rows, selectedCity, selectedType, keyword, sortKey, sortDir]);
+
+  // ---------- REPORT ----------
   const openReportModal = (row) => {
     setReportTarget(row);
     setReportError(null);
@@ -120,8 +184,8 @@ function PricePage() {
 
   const closeReportModal = () => {
     setReportTarget(null);
-    setReportError(null);
     setReportSubmitting(false);
+    setReportError(null);
   };
 
   const openClinicDetail = (clinicId) => {
@@ -142,7 +206,6 @@ function PricePage() {
       setReportSubmitting(true);
       setReportError(null);
 
-      const url = `${SUPABASE_URL}/rest/v1/mounjaro_reports`;
       const body = {
         city: reportTarget.city,
         district: reportDistrict || reportTarget.district || null,
@@ -158,7 +221,7 @@ function PricePage() {
         last_updated: new Date().toISOString().slice(0, 10),
       };
 
-      const res = await fetch(url, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/mounjaro_reports`, {
         method: "POST",
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -175,7 +238,7 @@ function PricePage() {
       closeReportModal();
     } catch (err) {
       console.error(err);
-      setReportError("傳送失敗了... 請稍後再試試看！");
+      setReportError("送出失敗，請稍後再試");
     } finally {
       setReportSubmitting(false);
     }
@@ -197,10 +260,11 @@ function PricePage() {
 
         <div className="info-banner warning-block">{texts.disclaimer}</div>
 
-        {loading && <LoadingIndicator centered={true} />}
+        {loading && <LoadingIndicator centered />}
         {error && <p className="status-text error">{error}</p>}
 
         <section className="control-card">
+          {/* Cities */}
           <div className="filter-row">
             <div className="filter-wrap-container">
               {cityOptions.map((c) => (
@@ -215,6 +279,9 @@ function PricePage() {
             </div>
           </div>
 
+          <div className="pp-divider" aria-hidden="true" />
+
+          {/* Types */}
           <div className="filter-row">
             <div className="filter-wrap-container">
               <button
@@ -246,6 +313,16 @@ function PricePage() {
             </div>
           </div>
 
+          {selectedType === "pharmacy" && (
+            <div className="warning-block small">{texts.pharmacyWarning}</div>
+          )}
+          {selectedType === "hospital" && (
+            <div className="warning-block small">{texts.hospitalWarning}</div>
+          )}
+
+          <div className="pp-divider" aria-hidden="true" />
+
+          {/* Doses */}
           <div className="filter-row">
             <div className="filter-wrap-container">
               <button
@@ -263,13 +340,9 @@ function PricePage() {
             </div>
           </div>
 
-          {selectedType === "pharmacy" && (
-            <div className="warning-block small">{texts.pharmacyWarning}</div>
-          )}
-          {selectedType === "hospital" && (
-            <div className="warning-block small">{texts.hospitalWarning}</div>
-          )}
+          <div className="pp-divider" aria-hidden="true" />
 
+          {/* Search */}
           <div className="search-wrapper">
             <span className="search-icon">🔍</span>
             <input
@@ -279,20 +352,47 @@ function PricePage() {
               className="search-input"
             />
           </div>
+
+          <div className="pp-divider" aria-hidden="true" />
+
+          {/* Sort quick (warning first) */}
+          <div className="filter-row">
+            <div className="filter-wrap-container">
+              <button
+                type="button"
+                onClick={() => requestSort("price5mg", "asc")}
+                className={`filter-btn sort-chip ${
+                  sortKey === "price5mg" && sortDir === "asc" ? "active" : ""
+                }`}
+              >
+                💰 5mg　低 → 高
+              </button>
+
+              <button
+                type="button"
+                onClick={() => requestSort("price10mg", "asc")}
+                className={`filter-btn sort-chip ${
+                  sortKey === "price10mg" && sortDir === "asc" ? "active" : ""
+                }`}
+              >
+                💰 10mg　低 → 高
+              </button>
+            </div>
+          </div>
         </section>
 
         {!loading && !error && (
           <>
             {isMobile ? (
               <PriceCardList
-                data={filteredData}
+                data={filteredAndSortedData}
                 showAllDoses={showAllDoses}
                 onOpenReport={openReportModal}
                 onOpenClinicDetail={openClinicDetail}
               />
             ) : (
               <PriceTable
-                data={filteredData}
+                data={filteredAndSortedData}
                 showAllDoses={showAllDoses}
                 onOpenReport={openReportModal}
               />
@@ -331,6 +431,77 @@ function PricePage() {
           clinicId={detailClinicId}
           onClose={closeClinicDetail}
         />
+
+        {/* Sort warning modal */}
+        {showSortWarning && (
+          <div className="modal-backdrop" onClick={cancelSort}>
+            <div
+              className="modal-card"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="價格排序提醒"
+            >
+              <div
+                style={{
+                  fontWeight: 900,
+                  fontSize: 16,
+                  marginBottom: 10,
+                  color: "#c0392b",
+                }}
+              >
+                ⚠️ 重要提醒
+              </div>
+
+              <div style={{ lineHeight: 1.7, fontWeight: 700, fontSize: 14 }}>
+                <p>
+                  若價格明顯偏低，通常為提供單次施打服務之診所，表面上價格較低，實際上未必較為划算。
+                </p>
+
+                <p>
+                  本站認為肥胖應當成慢性病治療，並不鼓勵購買單次施打。價格亦非選擇診所之唯一考量，專業有價；醫師的評估、治療規劃、後續追蹤與售後服務皆為重要因素。
+                </p>
+
+                <p>
+                  此外，本站收錄之價格資訊來源眾多，無法逐一進行實地查證，請務必親自前往實體診所或藥局購買。
+                </p>
+
+                <p>近期相關詐騙案件增加，請勿任意匯款至不明帳戶。</p>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  marginTop: 16,
+                  justifyContent: "flex-end",
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  type="button"
+                  className="filter-btn"
+                  onClick={cancelSort}
+                  style={{
+                    borderColor: "#999",
+                    color: "#555",
+                    background: "#fff",
+                  }}
+                >
+                  取消
+                </button>
+
+                <button
+                  type="button"
+                  className="filter-btn active"
+                  onClick={confirmSort}
+                >
+                  我了解，繼續排序
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
