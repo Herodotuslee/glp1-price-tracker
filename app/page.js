@@ -115,16 +115,53 @@ function PricePage() {
   }, []);
 
   // ---------- CITY OPTIONS ----------
+  const CITY_ORDER = [
+    "台北",
+    "新北",
+    "基隆",
+    "桃園",
+    "新竹",
+    "苗栗國",
+    "台中",
+    "彰化",
+    "南投",
+    "雲林",
+    "嘉義",
+    "台南",
+    "高雄",
+    "屏東",
+    "宜蘭",
+    "花蓮",
+    "台東",
+  ];
+
   const cityOptions = useMemo(() => {
     const uniqueCities = Array.from(
       new Set(rows.map((r) => r.city).filter(Boolean))
     );
+
+    uniqueCities.sort((a, b) => {
+      const ia = CITY_ORDER.indexOf(a);
+      const ib = CITY_ORDER.indexOf(b);
+
+      if (ia === -1 && ib === -1) return a.localeCompare(b, "zh-Hant");
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+
     return ["all", ...uniqueCities];
   }, [rows]);
 
   // ---------- SORT HELPER ----------
+  // Rule: if 5mg/10mg is 0 or null/undefined/"" -> treat as "no price" and place at the end
   const getSortValue = (row) => {
-    const n = (v) => (typeof v === "number" ? v : v == null ? null : Number(v));
+    const n = (v) => {
+      if (v === "" || v == null) return null;
+      const num = typeof v === "number" ? v : Number(v);
+      if (!Number.isFinite(num)) return null;
+      return num > 0 ? num : null; // <= 0 (including 0) goes to the end
+    };
 
     if (sortKey === "price5mg") return n(row.price5mg);
     if (sortKey === "price10mg") return n(row.price10mg);
@@ -136,7 +173,7 @@ function PricePage() {
       n(row.price10mg),
       n(row.price12_5mg),
       n(row.price15mg),
-    ].filter((v) => Number.isFinite(v));
+    ].filter((v) => v != null);
 
     return prices.length ? Math.min(...prices) : null;
   };
