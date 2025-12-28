@@ -1,3 +1,4 @@
+// src/components/PriceReportModal.js
 import React, { useEffect, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../config/supabase";
 import { CITY_LABELS, TYPE_LABELS } from "../data/prices";
@@ -302,6 +303,7 @@ function PriceReportModal({ target, onClose }) {
                   value={clinicName}
                   onChange={(e) => setClinicName(e.target.value)}
                   className="modal-input"
+                  disabled={submitting}
                 />
                 {isClinicRenamed && (
                   <div className="modal-hint-warn">
@@ -309,6 +311,19 @@ function PriceReportModal({ target, onClose }) {
                   </div>
                 )}
               </div>
+
+              {/* ✅ District editable (Update mode only) */}
+              <div className="modal-field">
+                <label className="modal-label">📍 地區</label>
+                <input
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  className="modal-input"
+                  placeholder="例如：西屯區"
+                  disabled={submitting}
+                />
+              </div>
+
               {/* ---------- TYPE SELECT (KEY FIX) ---------- */}
               <div className="modal-field">
                 <label className="modal-label">🏥 類型</label>
@@ -325,6 +340,7 @@ function PriceReportModal({ target, onClose }) {
                   ))}
                 </select>
               </div>
+
               <div className="modal-grid">
                 {[
                   ["2.5 mg", price2_5, setPrice2_5],
@@ -345,6 +361,7 @@ function PriceReportModal({ target, onClose }) {
                   </div>
                 ))}
               </div>
+
               <div className="modal-field">
                 <label className="modal-label">🍃 備註（選填）</label>
                 <textarea
