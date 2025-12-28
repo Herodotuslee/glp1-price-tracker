@@ -16,6 +16,9 @@ function PriceReportModal({ target, onClose }) {
   const [type, setType] = useState("clinic");
   const [address, setAddress] = useState("");
 
+  // Editable clinic name (rename request)
+  const [clinicName, setClinicName] = useState("");
+
   const [price2_5, setPrice2_5] = useState("");
   const [price5, setPrice5] = useState("");
   const [price7_5, setPrice7_5] = useState("");
@@ -27,12 +30,27 @@ function PriceReportModal({ target, onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  // Derived values (MUST be safe even when target is null)
+  const cityLabel = CITY_LABELS[target?.city] || target?.city || "-";
+
+  const normalizedTypeKey =
+    (type || "").toString().trim().toLowerCase() || "clinic";
+  const typeLabel = TYPE_LABELS[normalizedTypeKey] || "診所";
+
+  const originalClinic = (target?.clinic ?? "").toString().trim();
+  const editedClinic = (clinicName ?? "").toString().trim();
+
+  // No need for useMemo here (cheap comparison)
+  const isClinicRenamed =
+    !!originalClinic && !!editedClinic && originalClinic !== editedClinic;
+
   // Refill form when target changes
   useEffect(() => {
     if (!target) return;
 
     setDistrict(target.district ?? "");
     setAddress(target.address ?? "");
+    setClinicName(target.clinic ?? "");
 
     // Normalize type for select
     const normalizedType = (target.type || "clinic")
@@ -55,12 +73,6 @@ function PriceReportModal({ target, onClose }) {
 
   if (!target) return null;
 
-  const cityLabel = CITY_LABELS[target.city] || target.city || "-";
-
-  const typeLabel =
-    TYPE_LABELS[(type || "").toString().trim().toLowerCase() || "clinic"] ||
-    "診所";
-
   // Click backdrop = close
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget && !submitting) onClose();
@@ -70,6 +82,12 @@ function PriceReportModal({ target, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Require a clinic name (editable)
+    if (!editedClinic) {
+      setError("請填寫診所名稱喔！");
+      return;
+    }
 
     // Require at least one price
     if (
@@ -101,7 +119,10 @@ function PriceReportModal({ target, onClose }) {
 
         city: target.city,
         district: district || target.district || null,
-        clinic: target.clinic,
+
+        // Use edited clinic name (rename request)
+        clinic: editedClinic,
+
         address: address || target.address || null,
         type: (type || target.type || "clinic").toString().trim().toLowerCase(),
 
@@ -111,6 +132,7 @@ function PriceReportModal({ target, onClose }) {
         price5mg: toNullableInt(price5),
         price7_5mg: toNullableInt(price7_5),
         price10mg: toNullableInt(price10),
+        price12_5mg: toNullableInt(price10),
         price12_5mg: toNullableInt(price12_5),
         price15mg: toNullableInt(price15),
 
@@ -167,12 +189,40 @@ function PriceReportModal({ target, onClose }) {
             fontWeight: "600",
           }}
         >
-          {cityLabel} / {district || target.district || "-"} / {target.clinic}（
-          {typeLabel}）
+          {cityLabel} / {district || target.district || "-"} /{" "}
+          {isClinicRenamed ? (
+            <>
+              <span style={{ textDecoration: "line-through", opacity: 0.7 }}>
+                {originalClinic || "-"}
+              </span>{" "}
+              → <span style={{ fontWeight: "800" }}>{editedClinic || "-"}</span>
+            </>
+          ) : (
+            <span style={{ fontWeight: "800" }}>{editedClinic || "-"}</span>
+          )}
+          （{typeLabel}）
         </p>
 
         {/* ---------------- Form ---------------- */}
         <form onSubmit={handleSubmit}>
+          {/* Clinic Name (editable) */}
+          <div className="modal-field">
+            <label className="modal-label">🏷️ 診所名稱</label>
+            <input
+              type="text"
+              value={clinicName}
+              onChange={(e) => setClinicName(e.target.value)}
+              className="modal-input"
+              placeholder="例如：XX診所 / XX醫院"
+            />
+
+            {isClinicRenamed && (
+              <div className="modal-hint-warn">
+                已偵測到「診所名稱更改」：此更動需要站長審核後才會更新到主資料。
+              </div>
+            )}
+          </div>
+
           {/* District + Type */}
           <div className="modal-row-2">
             <div className="modal-field">
