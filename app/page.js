@@ -78,6 +78,36 @@ function PricePage() {
 
   const isMobile = useIsMobile(640);
 
+  // ---------- FUN CITY NAME (ONLY FOR THE HEADER LINE) ----------
+  // Do NOT use this for filtering, only for display in the "X 個合法通路" sentence.
+  const CITY_ALIAS = useMemo(
+    () => ({
+      台北: "天龍國",
+      新北: "新北",
+      基隆: "雨都",
+      桃園: "桃花源",
+      新竹: "風城",
+      苗栗國: "苗栗國",
+      台中: "中都",
+      彰化: "彰化",
+      南投: "內地",
+      雲林: "雲林",
+      嘉義: "綠豆城",
+      台南: "府城",
+      高雄: "港都",
+      屏東: "國境之南",
+      宜蘭: "蘭陽",
+      花蓮: "後山",
+      台東: "後山",
+    }),
+    []
+  );
+
+  const cityDisplayName = (cityKey) => {
+    if (!cityKey) return "-";
+    return CITY_ALIAS[cityKey] || cityKey;
+  };
+
   // ---------- FETCH ----------
   useEffect(() => {
     let cancelled = false;
@@ -153,14 +183,36 @@ function PricePage() {
     return ["all", ...uniqueCities];
   }, [rows]);
 
+  // ---------- TOTAL COUNT (ALL TYPES) FOLLOW CITY ----------
+  // Counts all types (clinic/hospital/pharmacy/medical_aesthetic).
+  // Follows selectedCity ("all" => nationwide).
+  // Deduplicates by id first; fallback to (city|type|clinic).
+  const totalLocationCount = useMemo(() => {
+    const seen = new Set();
+
+    for (const r of rows || []) {
+      if (!cityMatchesSelected(r.city, selectedCity)) continue;
+
+      const t = (r?.type || "clinic").toString().trim().toLowerCase();
+      const key =
+        (r?.id ? `id:${r.id}` : null) ??
+        `key:${(r?.city ?? "").toString().trim()}|${t}|${(r?.clinic ?? "")
+          .toString()
+          .trim()}`;
+
+      if (!seen.has(key)) seen.add(key);
+    }
+
+    return seen.size;
+  }, [rows, selectedCity]);
+
   // ---------- SORT HELPER ----------
-  // Rule: if 5mg/10mg is 0 or null/undefined/"" -> treat as "no price" and place at the end
   const getSortValue = (row) => {
     const n = (v) => {
       if (v === "" || v == null) return null;
       const num = typeof v === "number" ? v : Number(v);
       if (!Number.isFinite(num)) return null;
-      return num > 0 ? num : null; // <= 0 (including 0) goes to the end
+      return num > 0 ? num : null;
     };
 
     if (sortKey === "price5mg") return n(row.price5mg);
@@ -258,9 +310,6 @@ function PricePage() {
         last_updated: new Date().toISOString().slice(0, 10),
       };
 
-      console.log("reportTarget.id =", reportTarget?.id);
-      console.log("POST body =", body);
-
       const res = await fetch(`${SUPABASE_URL}/rest/v1/mounjaro_reports`, {
         method: "POST",
         headers: {
@@ -271,9 +320,6 @@ function PricePage() {
         },
         body: JSON.stringify(body),
       });
-
-      const json = await res.json();
-      console.log("inserted row =", json);
 
       if (!res.ok) throw new Error("Submit failed");
 
@@ -294,10 +340,23 @@ function PricePage() {
           <h1 className="page-title">
             <span className="title-icon">📢</span> 全國價格公佈欄
           </h1>
+
           <p className="page-subtitle-text">
             大家好！這裡是整理各地診所與藥局價格的地方。
             <br />
             如果發現資訊有變動，歡迎協助回報更新喔！
+            <br />
+            {!loading && !error && (
+              <span style={{ fontWeight: 800 }}>
+                全
+                {selectedCity === "all" ? "國" : cityDisplayName(selectedCity)}
+                目前總共{" "}
+                <span style={{ fontWeight: 900 }}>
+                  {totalLocationCount}
+                </span>{" "}
+                個合法通路可以購買唷！
+              </span>
+            )}
           </p>
         </header>
 
@@ -498,11 +557,12 @@ function PricePage() {
 
               <div style={{ lineHeight: 1.7, fontWeight: 700, fontSize: 14 }}>
                 <p>
-                  若價格明顯偏低，通常為為提供單次施打服務之診所，拿大劑量打小劑量，表面上價格較低，實際上未必較為划算。
+                  若價格明顯偏低，為提供單次施打服務之診所，拿大劑量打小劑量，表面上價格較低，實際上未必較為划算。
                   島主認為肥胖應當成慢性病治療，並不鼓勵購買單次施打。
                 </p>
+
                 <p>
-                  價格非選擇診所之唯一考量，專業有價；醫師的評估、治療規劃、後續追蹤與售後服務皆為重要因素。若是經濟能力充裕，歡迎大家也能多支持台灣的好醫師而非一昧追求最低價唷！
+                  價格非選擇診所之唯一考量，專業有價；醫師的評估、治療規劃、後續追蹤與售後服務皆為重要因素。若是若經濟能力充裕，歡迎大家也能多支持台灣的好醫師而非一昧追求最低價唷！
                 </p>
                 <p>
                   此外，本站收錄之價格資訊來源眾多，無法逐一進行實地查證，近期相關詐騙案件增加，請勿任意匯款至不明帳戶。

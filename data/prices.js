@@ -8,7 +8,7 @@ export const CITY_LABELS = {
   kaohsiung: "高雄",
   keelung: "基隆",
   hsinchu: "新竹",
-  miaoli: "苗栗國",
+  miaoli: "苗栗",
   changhua: "彰化",
   nantou: "南投",
   yunlin: "雲林",
