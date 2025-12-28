@@ -95,7 +95,7 @@ function PricePage() {
       嘉義: "綠豆城",
       台南: "府城",
       高雄: "打狗",
-      屏東: "國境之南",
+      屏東: "屏東",
       宜蘭: "蘭陽",
       花蓮: "花蓮",
       台東: "台東",
@@ -348,12 +348,11 @@ function PricePage() {
             <br />
             {!loading && !error && (
               <span style={{ fontWeight: 800 }}>
-                全
-                {selectedCity === "all" ? "國" : cityDisplayName(selectedCity)}
+                {selectedCity === "all"
+                  ? "全國"
+                  : cityDisplayName(selectedCity)}
                 目前總共{" "}
-                <span style={{ fontWeight: 900 }}>
-                  {totalLocationCount}
-                </span>{" "}
+                <span style={{ fontWeight: 900 }}>{totalLocationCount}</span>{" "}
                 個合法通路可以購買唷！
               </span>
             )}

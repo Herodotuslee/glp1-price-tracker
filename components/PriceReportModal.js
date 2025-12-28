@@ -14,8 +14,8 @@ const toNullableInt = (value) => {
 function PriceReportModal({ target, onClose }) {
   /**
    * mode:
-   * - update  → original update flow
-   * - cleanup → delete / duplicate / invalid data
+   * - update  -> original update flow
+   * - cleanup -> delete / duplicate / invalid data
    */
   const [mode, setMode] = useState("update");
 
@@ -34,8 +34,8 @@ function PriceReportModal({ target, onClose }) {
 
   /**
    * note:
-   * - update  → optional note
-   * - cleanup → required reason (no length restriction)
+   * - update  -> optional note
+   * - cleanup -> required reason
    */
   const [note, setNote] = useState("");
 
@@ -103,7 +103,9 @@ function PriceReportModal({ target, onClose }) {
       }
     )
       .then((r) => r.json())
-      .then((rows) => setHasPendingDeletion(rows.length > 0))
+      .then((rows) =>
+        setHasPendingDeletion(Array.isArray(rows) && rows.length > 0)
+      )
       .catch(() => setHasPendingDeletion(false));
   }, [target]);
 
@@ -121,7 +123,7 @@ function PriceReportModal({ target, onClose }) {
 
     // ---------- Cleanup validation ----------
     if (isCleanup) {
-      if (note === "") {
+      if (note.trim() === "") {
         setError("請填寫刪除原因。");
         return;
       }
@@ -166,27 +168,25 @@ function PriceReportModal({ target, onClose }) {
             body: JSON.stringify({
               mounjaro_data_id: target.id,
               reason: note,
-              snapshot: target,
+              snapshot: {
+                ...target,
+                corrected_type: normalizedTypeKey,
+              },
             }),
           }
         );
 
         if (!res.ok) {
           const err = await res.json();
-
-          if (
-            err?.code === "23505" ||
-            JSON.stringify(err).includes("mounjaro_data_deletion_queue_unique")
-          ) {
+          if (err?.code === "23505") {
             alert("⚠️ 此資料已經有人申請刪除，正在審核中。");
             onClose();
             return;
           }
-
           throw new Error(JSON.stringify(err));
         }
 
-        alert("🧹 已送出刪除申請，感謝協助！");
+        alert("🧹 已送出刪除 / 修正申請，感謝協助！");
         onClose();
         return;
       }
@@ -276,15 +276,32 @@ function PriceReportModal({ target, onClose }) {
               }}
               disabled={submitting || hasPendingDeletion}
             >
-              {hasPendingDeletion ? "刪除審核中" : "刪除錯誤 / 重複資料"}
+              {hasPendingDeletion ? "刪除審核中" : "刪除 / 修正錯誤資料"}
             </button>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
+          {/* ---------- TYPE SELECT (KEY FIX) ---------- */}
+          <div className="modal-field">
+            <label className="modal-label">🏥 類型</label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="modal-input"
+              disabled={submitting}
+            >
+              {Object.entries(TYPE_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {isCleanup && (
             <div className="modal-field">
-              <label className="modal-label">🧩 原因 / 說明（必填）</label>
+              <label className="modal-label">🧩 刪除原因（必填）</label>
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
