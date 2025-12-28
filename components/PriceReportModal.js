@@ -1,9 +1,10 @@
-// src/components/PriceReportModal.js
 import React, { useEffect, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../config/supabase";
 import { CITY_LABELS, TYPE_LABELS } from "../data/prices";
 
-// Convert empty string to number or null
+/**
+ * Convert empty string to number or null
+ */
 const toNullableInt = (value) => {
   if (value === "" || value === null || value === undefined) return null;
   const n = Number(value);
@@ -11,12 +12,17 @@ const toNullableInt = (value) => {
 };
 
 function PriceReportModal({ target, onClose }) {
-  // Local editable fields
+  /**
+   * mode:
+   * - update  → original update flow
+   * - cleanup → delete / duplicate / invalid data
+   */
+  const [mode, setMode] = useState("update");
+
+  // ---------- Update fields ----------
   const [district, setDistrict] = useState("");
   const [type, setType] = useState("clinic");
   const [address, setAddress] = useState("");
-
-  // Editable clinic name (rename request)
   const [clinicName, setClinicName] = useState("");
 
   const [price2_5, setPrice2_5] = useState("");
@@ -25,12 +31,24 @@ function PriceReportModal({ target, onClose }) {
   const [price10, setPrice10] = useState("");
   const [price12_5, setPrice12_5] = useState("");
   const [price15, setPrice15] = useState("");
+
+  /**
+   * note:
+   * - update  → optional note
+   * - cleanup → required reason (no length restriction)
+   */
   const [note, setNote] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Derived values (MUST be safe even when target is null)
+  // Whether a pending deletion already exists
+  const [hasPendingDeletion, setHasPendingDeletion] = useState(false);
+
+  const isUpdate = mode === "update";
+  const isCleanup = mode === "cleanup";
+
+  // ---------- Derived display ----------
   const cityLabel = CITY_LABELS[target?.city] || target?.city || "-";
 
   const normalizedTypeKey =
@@ -40,19 +58,18 @@ function PriceReportModal({ target, onClose }) {
   const originalClinic = (target?.clinic ?? "").toString().trim();
   const editedClinic = (clinicName ?? "").toString().trim();
 
-  // No need for useMemo here (cheap comparison)
   const isClinicRenamed =
     !!originalClinic && !!editedClinic && originalClinic !== editedClinic;
 
-  // Refill form when target changes
+  // ---------- Init when target changes ----------
   useEffect(() => {
     if (!target) return;
 
+    setMode("update");
     setDistrict(target.district ?? "");
     setAddress(target.address ?? "");
     setClinicName(target.clinic ?? "");
 
-    // Normalize type for select
     const normalizedType = (target.type || "clinic")
       .toString()
       .trim()
@@ -65,86 +82,117 @@ function PriceReportModal({ target, onClose }) {
     setPrice10(target.price10mg ?? "");
     setPrice12_5(target.price12_5mg ?? "");
     setPrice15(target.price15mg ?? "");
-    setNote(target.note ?? "");
 
+    setNote("");
     setError(null);
     setSubmitting(false);
   }, [target]);
 
+  // ---------- Check pending deletion ----------
+  useEffect(() => {
+    if (!target?.id) return;
+
+    fetch(
+      `${SUPABASE_URL}/rest/v1/mounjaro_data_deletion_queue?` +
+        `mounjaro_data_id=eq.${target.id}&status=eq.pending&select=id`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    )
+      .then((r) => r.json())
+      .then((rows) => setHasPendingDeletion(rows.length > 0))
+      .catch(() => setHasPendingDeletion(false));
+  }, [target]);
+
   if (!target) return null;
 
-  // Click backdrop = close
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget && !submitting) onClose();
-  };
-
-  // Submit update report (pending) so admin can diff before approval
+  // ---------- Submit ----------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // Require a clinic name (editable)
-    if (!editedClinic) {
-      setError("請填寫診所名稱喔！");
-      return;
-    }
-
-    // Require at least one price
-    if (
-      !price2_5 &&
-      !price5 &&
-      !price7_5 &&
-      !price10 &&
-      !price12_5 &&
-      !price15
-    ) {
-      setError("請至少填寫一個劑量的價格喔 HOO！");
-      return;
-    }
-
-    // Hard guard: update flow must link to an existing main row id
     if (!target?.id) {
-      setError("Missing target.id. This update cannot be linked for diff.");
+      setError("Missing target id.");
       return;
+    }
+
+    // ---------- Cleanup validation ----------
+    if (isCleanup) {
+      if (note === "") {
+        setError("請填寫刪除原因。");
+        return;
+      }
+
+      if (hasPendingDeletion) {
+        alert("⚠️ 此資料已經有人申請刪除，正在審核中。");
+        return;
+      }
+    }
+
+    // ---------- Update validation ----------
+    if (isUpdate) {
+      if (!editedClinic) {
+        setError("請填寫診所名稱。");
+        return;
+      }
+
+      const hasPrice =
+        price2_5 || price5 || price7_5 || price10 || price12_5 || price15;
+
+      if (!hasPrice) {
+        setError("請至少填寫一個劑量的價格。");
+        return;
+      }
     }
 
     try {
       setSubmitting(true);
 
-      const url = `${SUPABASE_URL}/rest/v1/mounjaro_reports`;
+      // ---------- Cleanup flow ----------
+      if (isCleanup) {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/mounjaro_data_deletion_queue`,
+          {
+            method: "POST",
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              mounjaro_data_id: target.id,
+              reason: note,
+              snapshot: target,
+            }),
+          }
+        );
 
-      const body = {
-        // IMPORTANT: link to main row so pending can diff immediately
-        mounjaro_data_id: target.id,
+        if (!res.ok) {
+          const err = await res.json();
 
-        city: target.city,
-        district: district || target.district || null,
+          if (
+            err?.code === "23505" ||
+            JSON.stringify(err).includes("mounjaro_data_deletion_queue_unique")
+          ) {
+            alert("⚠️ 此資料已經有人申請刪除，正在審核中。");
+            onClose();
+            return;
+          }
 
-        // Use edited clinic name (rename request)
-        clinic: editedClinic,
+          throw new Error(JSON.stringify(err));
+        }
 
-        address: address || target.address || null,
-        type: (type || target.type || "clinic").toString().trim().toLowerCase(),
+        alert("🧹 已送出刪除申請，感謝協助！");
+        onClose();
+        return;
+      }
 
-        is_cosmetic: target.is_cosmetic ?? false,
-
-        price2_5mg: toNullableInt(price2_5),
-        price5mg: toNullableInt(price5),
-        price7_5mg: toNullableInt(price7_5),
-        price10mg: toNullableInt(price10),
-        price12_5mg: toNullableInt(price10),
-        price12_5mg: toNullableInt(price12_5),
-        price15mg: toNullableInt(price15),
-
-        note: note || null,
-        status: "pending",
-      };
-
-      // Debug: verify payload includes mounjaro_data_id
-      console.log("[UPDATE FLOW] report target id =", target.id);
-      console.log("[UPDATE FLOW] POST body =", body);
-
-      const res = await fetch(url, {
+      // ---------- Update flow ----------
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/mounjaro_reports`, {
         method: "POST",
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -152,177 +200,151 @@ function PriceReportModal({ target, onClose }) {
           "Content-Type": "application/json",
           Prefer: "return=representation",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          mounjaro_data_id: target.id,
+          city: target.city,
+          district: district || target.district || null,
+          clinic: editedClinic,
+          address: address || target.address || null,
+          type: normalizedTypeKey,
+          is_cosmetic: target.is_cosmetic ?? false,
+
+          price2_5mg: toNullableInt(price2_5),
+          price5mg: toNullableInt(price5),
+          price7_5mg: toNullableInt(price7_5),
+          price10mg: toNullableInt(price10),
+          price12_5mg: toNullableInt(price12_5),
+          price15mg: toNullableInt(price15),
+
+          note: note || null,
+          status: "pending",
+        }),
       });
 
-      const json = await res.json();
-
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${JSON.stringify(json)}`);
+        const err = await res.json();
+        throw new Error(JSON.stringify(err));
       }
 
-      console.log("[UPDATE FLOW] inserted row =", json);
-
-      alert("🎉 回報成功！狸克感謝你的付出！");
+      alert("🎉 回報成功！感謝你的回報！");
       onClose();
     } catch (err) {
-      console.error("❌ Update report failed:", err);
-      setError("送出失敗，請稍後再試。如果持續發生，請聯絡站長。");
+      console.error(err);
+      setError("送出失敗，請稍後再試。");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="modal-backdrop" onClick={handleBackdropClick}>
+    <div className="modal-backdrop">
       <div className="modal-card">
         <h2 className="modal-title">📝 價格回報單</h2>
 
-        {/* Low-key clinic info line */}
+        {/* Clinic context */}
         <p
           style={{
-            marginTop: "4px",
-            marginBottom: "14px",
-            fontSize: "13px",
+            marginTop: 4,
+            marginBottom: 14,
+            fontSize: 13,
             color: "var(--ac-brown)",
             textAlign: "center",
-            fontWeight: "600",
+            fontWeight: 600,
           }}
         >
           {cityLabel} / {district || target.district || "-"} /{" "}
-          {isClinicRenamed ? (
-            <>
-              <span style={{ textDecoration: "line-through", opacity: 0.7 }}>
-                {originalClinic || "-"}
-              </span>{" "}
-              → <span style={{ fontWeight: "800" }}>{editedClinic || "-"}</span>
-            </>
-          ) : (
-            <span style={{ fontWeight: "800" }}>{editedClinic || "-"}</span>
-          )}
-          （{typeLabel}）
+          <strong>{editedClinic || "-"}</strong>（{typeLabel}）
         </p>
 
-        {/* ---------------- Form ---------------- */}
-        <form onSubmit={handleSubmit}>
-          {/* Clinic Name (editable) */}
-          <div className="modal-field">
-            <label className="modal-label">🏷️ 診所名稱</label>
-            <input
-              type="text"
-              value={clinicName}
-              onChange={(e) => setClinicName(e.target.value)}
-              className="modal-input"
-              placeholder="例如：XX診所 / XX醫院"
-            />
-
-            {isClinicRenamed && (
-              <div className="modal-hint-warn">
-                已偵測到「診所名稱更改」：此更動需要站長審核後才會更新到主資料。
-              </div>
-            )}
+        {/* Mode buttons */}
+        <div className="modal-field">
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              type="button"
+              className={`filter-btn ${isUpdate ? "active" : ""}`}
+              onClick={() => setMode("update")}
+              disabled={submitting}
+            >
+              回報更新
+            </button>
+            <button
+              type="button"
+              className={`filter-btn ${isCleanup ? "active" : ""}`}
+              onClick={() => {
+                setMode("cleanup");
+                setNote("");
+              }}
+              disabled={submitting || hasPendingDeletion}
+            >
+              {hasPendingDeletion ? "刪除審核中" : "刪除錯誤 / 重複資料"}
+            </button>
           </div>
+        </div>
 
-          {/* District + Type */}
-          <div className="modal-row-2">
+        <form onSubmit={handleSubmit}>
+          {isCleanup && (
             <div className="modal-field">
-              <label className="modal-label">📍 地區（選填）</label>
-              <input
-                type="text"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="modal-input"
-                placeholder="例如：信義區"
+              <label className="modal-label">🧩 原因 / 說明（必填）</label>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={4}
+                className="modal-textarea"
               />
             </div>
+          )}
 
-            <div className="modal-field">
-              <label className="modal-label">🏥 類型</label>
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="modal-input"
-              >
-                <option value="clinic">診所</option>
-                <option value="hospital">醫院</option>
-                <option value="pharmacy">藥局</option>
-                <option value="medical_aesthetic">醫美</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Address (optional) */}
-          <div className="modal-field" style={{ marginTop: "10px" }}>
-            <label className="modal-label">🏠 地址（選填）</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="modal-input"
-            />
-          </div>
-
-          {/* Price Section Title */}
-          <div
-            style={{
-              marginBottom: "8px",
-              marginTop: "12px",
-              borderBottom: "1px dashed #ddd",
-              paddingBottom: "4px",
-            }}
-          >
-            <span className="modal-label" style={{ color: "var(--ac-teal)" }}>
-              💰 價格（NT$）
-            </span>
-          </div>
-
-          {/* Price Grid (3 Columns) */}
-          <div className="modal-grid">
-            {[
-              ["2.5 mg", price2_5, setPrice2_5],
-              ["5 mg", price5, setPrice5],
-              ["7.5 mg", price7_5, setPrice7_5],
-              ["10 mg", price10, setPrice10],
-              ["12.5 mg", price12_5, setPrice12_5],
-              ["15 mg", price15, setPrice15],
-            ].map(([label, value, setter], idx) => (
-              <div className="modal-field dose-field" key={idx}>
-                <label className="modal-label">{label}</label>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <input
-                    type="number"
-                    value={value}
-                    onChange={(e) => setter(e.target.value)}
-                    className="modal-input"
-                    placeholder="-"
-                    style={{ flex: 1, padding: "4px" }}
-                  />
-                </div>
+          {isUpdate && (
+            <>
+              <div className="modal-field">
+                <label className="modal-label">🏷️ 診所名稱</label>
+                <input
+                  value={clinicName}
+                  onChange={(e) => setClinicName(e.target.value)}
+                  className="modal-input"
+                />
+                {isClinicRenamed && (
+                  <div className="modal-hint-warn">
+                    已偵測到診所名稱變更，需經站長審核。
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
 
-          {/* Note */}
-          <div className="modal-field" style={{ marginTop: "12px" }}>
-            <label className="modal-label">🍃 備註（選填）</label>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={3}
-              className="modal-textarea"
-              placeholder="有什麼特別要注意的嗎？"
-            />
-          </div>
+              <div className="modal-grid">
+                {[
+                  ["2.5 mg", price2_5, setPrice2_5],
+                  ["5 mg", price5, setPrice5],
+                  ["7.5 mg", price7_5, setPrice7_5],
+                  ["10 mg", price10, setPrice10],
+                  ["12.5 mg", price12_5, setPrice12_5],
+                  ["15 mg", price15, setPrice15],
+                ].map(([label, value, setter]) => (
+                  <div className="modal-field dose-field" key={label}>
+                    <label className="modal-label">{label}</label>
+                    <input
+                      type="number"
+                      value={value}
+                      onChange={(e) => setter(e.target.value)}
+                      className="modal-input"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="modal-field">
+                <label className="modal-label">🍃 備註（選填）</label>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={3}
+                  className="modal-textarea"
+                />
+              </div>
+            </>
+          )}
 
           {error && <p className="modal-error">{error}</p>}
 
-          {/* Action Buttons */}
           <div className="modal-actions">
             <button
               type="button"
@@ -332,9 +354,8 @@ function PriceReportModal({ target, onClose }) {
             >
               取消
             </button>
-
-            <button type="submit" disabled={submitting} className="btn-primary">
-              {submitting ? "傳送中…" : "確認回報"}
+            <button type="submit" className="btn-primary" disabled={submitting}>
+              {submitting ? "傳送中…" : "送出"}
             </button>
           </div>
         </form>
