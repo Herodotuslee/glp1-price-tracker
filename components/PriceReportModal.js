@@ -282,23 +282,6 @@ function PriceReportModal({ target, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* ---------- TYPE SELECT (KEY FIX) ---------- */}
-          <div className="modal-field">
-            <label className="modal-label">🏥 類型</label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="modal-input"
-              disabled={submitting}
-            >
-              {Object.entries(TYPE_LABELS).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {isCleanup && (
             <div className="modal-field">
               <label className="modal-label">🧩 刪除原因（必填）</label>
@@ -326,7 +309,22 @@ function PriceReportModal({ target, onClose }) {
                   </div>
                 )}
               </div>
-
+              {/* ---------- TYPE SELECT (KEY FIX) ---------- */}
+              <div className="modal-field">
+                <label className="modal-label">🏥 類型</label>
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="modal-input"
+                  disabled={submitting}
+                >
+                  {Object.entries(TYPE_LABELS).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="modal-grid">
                 {[
                   ["2.5 mg", price2_5, setPrice2_5],
@@ -347,7 +345,6 @@ function PriceReportModal({ target, onClose }) {
                   </div>
                 ))}
               </div>
-
               <div className="modal-field">
                 <label className="modal-label">🍃 備註（選填）</label>
                 <textarea
