@@ -82,13 +82,13 @@ function PricePage() {
   // Do NOT use this for filtering, only for display in the "X 個合法通路" sentence.
   const CITY_ALIAS = useMemo(
     () => ({
-      台北: "天龍國",
+      台北: "台北",
       新北: "新北",
       基隆: "雨都",
-      桃園: "桃花源",
+      桃園: "桃園",
       新竹: "風城",
       苗栗國: "苗栗國",
-      台中: "中都",
+      台中: "大台中",
       彰化: "彰化",
       南投: "內地",
       雲林: "雲林",
@@ -97,8 +97,8 @@ function PricePage() {
       高雄: "打狗",
       屏東: "國境之南",
       宜蘭: "蘭陽",
-      花蓮: "後山",
-      台東: "後山",
+      花蓮: "花蓮",
+      台東: "台東",
     }),
     []
   );
