@@ -258,6 +258,9 @@ function PricePage() {
         last_updated: new Date().toISOString().slice(0, 10),
       };
 
+      console.log("reportTarget.id =", reportTarget?.id);
+      console.log("POST body =", body);
+
       const res = await fetch(`${SUPABASE_URL}/rest/v1/mounjaro_reports`, {
         method: "POST",
         headers: {
@@ -268,6 +271,9 @@ function PricePage() {
         },
         body: JSON.stringify(body),
       });
+
+      const json = await res.json();
+      console.log("inserted row =", json);
 
       if (!res.ok) throw new Error("Submit failed");
 
