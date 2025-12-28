@@ -27,14 +27,14 @@ function PriceReportModal({ target, onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // refill when target changes
+  // Refill form when target changes
   useEffect(() => {
     if (!target) return;
 
     setDistrict(target.district ?? "");
     setAddress(target.address ?? "");
 
-    // English comment: normalize type for select
+    // Normalize type for select
     const normalizedType = (target.type || "clinic")
       .toString()
       .trim()
@@ -61,17 +61,17 @@ function PriceReportModal({ target, onClose }) {
     TYPE_LABELS[(type || "").toString().trim().toLowerCase() || "clinic"] ||
     "診所";
 
-  // click backdrop = close
+  // Click backdrop = close
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget && !submitting) onClose();
   };
 
-  // Submit update to backend
+  // Submit update report (pending) so admin can diff before approval
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // require at least one price
+    // Require at least one price
     if (
       !price2_5 &&
       !price5 &&
@@ -84,20 +84,25 @@ function PriceReportModal({ target, onClose }) {
       return;
     }
 
+    // Hard guard: update flow must link to an existing main row id
+    if (!target?.id) {
+      setError("Missing target.id. This update cannot be linked for diff.");
+      return;
+    }
+
     try {
       setSubmitting(true);
 
       const url = `${SUPABASE_URL}/rest/v1/mounjaro_reports`;
 
       const body = {
+        // IMPORTANT: link to main row so pending can diff immediately
+        mounjaro_data_id: target.id,
+
         city: target.city,
         district: district || target.district || null,
         clinic: target.clinic,
-
-        // English comment: allow user to update address (optional)
         address: address || target.address || null,
-
-        // English comment: allow user to choose type
         type: (type || target.type || "clinic").toString().trim().toLowerCase(),
 
         is_cosmetic: target.is_cosmetic ?? false,
@@ -110,9 +115,12 @@ function PriceReportModal({ target, onClose }) {
         price15mg: toNullableInt(price15),
 
         note: note || null,
-        last_updated: new Date().toISOString().slice(0, 10),
         status: "pending",
       };
+
+      // Debug: verify payload includes mounjaro_data_id
+      console.log("[UPDATE FLOW] report target id =", target.id);
+      console.log("[UPDATE FLOW] POST body =", body);
 
       const res = await fetch(url, {
         method: "POST",
@@ -125,15 +133,18 @@ function PriceReportModal({ target, onClose }) {
         body: JSON.stringify(body),
       });
 
+      const json = await res.json();
+
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`HTTP ${res.status}: ${text}`);
+        throw new Error(`HTTP ${res.status}: ${JSON.stringify(json)}`);
       }
+
+      console.log("[UPDATE FLOW] inserted row =", json);
 
       alert("🎉 回報成功！狸克感謝你的付出！");
       onClose();
     } catch (err) {
-      console.error("❌ 協助更新送出失敗：", err);
+      console.error("❌ Update report failed:", err);
       setError("送出失敗，請稍後再試。如果持續發生，請聯絡站長。");
     } finally {
       setSubmitting(false);
