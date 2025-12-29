@@ -28,18 +28,19 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-container">
+        {/* Header row */}
         <div className="nav-header-row">
           <Link href="/" className="nav-brand" onClick={closeMenu}>
             <span className="brand-icon">🍃</span>
-
             <span className="ac-colored-title">
               {"猛健樂森友會".split("").map((char, index) => (
-                <span key={index} className={`ac-char ac-char-${index % 5}`}>
+                <span key={index} className={`ac-char ac-char-${index % 6}`}>
                   {char}
                 </span>
               ))}
             </span>
           </Link>
+
           <button
             type="button"
             className="nav-toggle"
@@ -52,6 +53,7 @@ function Navbar() {
           </button>
         </div>
 
+        {/* Main navigation */}
         <div className={`nav-main ${isMenuOpen ? "open" : ""}`}>
           <ul className="nav-links">
             <li>
@@ -120,6 +122,7 @@ function Navbar() {
           </ul>
         </div>
 
+        {/* Action buttons */}
         <div className="nav-actions">
           <a
             href="https://line.me/ti/g2/14wNaS4K1nmA7ytMa8pgzTLuslICubxDFVdjuQ"
@@ -129,11 +132,11 @@ function Navbar() {
             onClick={closeMenu}
           >
             <Image
-              src="image/icons8-line-me.svg"
+              src="/image/icons8-line-me.svg"
               alt="LINE"
+              width={18}
+              height={18}
               className="nav-icon-img"
-              width={24}
-              height={24}
             />
             <span>加入群組</span>
           </a>
