@@ -12,9 +12,14 @@ const formatNumber = (num) => {
 
 function DoseCalculatorPage() {
   const [penStrength, setPenStrength] = useState(10); // mg
-  const [dose, setDose] = useState(""); // mg
+  const [dose, setDose] = useState(""); // mg (number or "")
   const [clicks, setClicks] = useState(null);
-  const [totalUses, setTotalUses] = useState(null);
+
+  // Two answers:
+  // 1) Without residual: total = penStrength * 4
+  // 2) With residual:    total = penStrength * 4 + residualMg
+  const [usesNoResidual, setUsesNoResidual] = useState(null);
+  const [usesWithResidual, setUsesWithResidual] = useState(null);
 
   const handleDoseInput = (value) => {
     const num = Number(value);
@@ -22,26 +27,39 @@ function DoseCalculatorPage() {
     if (num <= 0 || Number.isNaN(num)) {
       setDose("");
       setClicks(null);
-      setTotalUses(null);
+      setUsesNoResidual(null);
+      setUsesWithResidual(null);
       return;
     }
 
     setDose(num);
-
     setClicks(null);
-    setTotalUses(null);
+    setUsesNoResidual(null);
+    setUsesWithResidual(null);
   };
+
+  // --- Residual mg as a variable (not hardcoded "penStrength * 5") ---
+  // Assumption: residual roughly equals one extra full penStrength dose worth of mg.
+  // If you want a fixed residual (e.g. 1 mg), change this to: const residualMg = 1;
+  const residualMg = penStrength;
 
   const calculate = () => {
     if (!penStrength || !dose) return;
 
-    let raw = (dose * 60) / penStrength;
+    // Clicks: (dose / penStrength) * 60
+    const rawClicks = (dose * 60) / penStrength;
 
-    const totalAvailable = penStrength * 4;
-    const uses = totalAvailable / dose;
+    // Total available (mg)
+    const baseTotalAvailable = penStrength * 4; // no residual
+    const totalAvailableWithResidual = baseTotalAvailable + residualMg; // with residual
 
-    setClicks(raw);
-    setTotalUses(uses);
+    // Uses
+    const noResidual = baseTotalAvailable / dose;
+    const withResidual = totalAvailableWithResidual / dose;
+
+    setClicks(rawClicks);
+    setUsesNoResidual(noResidual);
+    setUsesWithResidual(withResidual);
   };
 
   const getDecimalPart = (num) => {
@@ -77,7 +95,8 @@ function DoseCalculatorPage() {
                   setPenStrength(newStrength);
 
                   setClicks(null);
-                  setTotalUses(null);
+                  setUsesNoResidual(null);
+                  setUsesWithResidual(null);
                 }}
                 className="ac-input ac-select"
               >
@@ -111,7 +130,7 @@ function DoseCalculatorPage() {
           {/* Results */}
           {clicks !== null && (
             <div className="results-container">
-              {/* 格數 */}
+              {/* Clicks */}
               <div className="result-box primary">
                 <p className="result-label">請轉動筆身</p>
                 <div className="result-value">
@@ -119,7 +138,7 @@ function DoseCalculatorPage() {
                 </div>
               </div>
 
-              {/* 小數格數提醒 */}
+              {/* Decimal warning */}
               {decimalPart !== null && (
                 <div
                   className="info-banner warning-block"
@@ -132,12 +151,19 @@ function DoseCalculatorPage() {
                 </div>
               )}
 
-              {/* 次數 */}
+              {/* Uses (two answers) */}
               <div className="result-box secondary">
                 一支全新的 {penStrength} mg 筆<br />
-                若不包含殘劑估計可施打{" "}
+                估計可施打{" "}
                 <span className="highlight-text">
-                  {formatNumber(totalUses)}
+                  {formatNumber(usesNoResidual)}
+                </span>{" "}
+                次 {dose} mg
+                <br />
+                若考量殘劑（約 +一次{formatNumber(residualMg)}{" "}
+                mg的量），估計可施打{" "}
+                <span className="highlight-text">
+                  {formatNumber(usesWithResidual)}
                 </span>{" "}
                 次 {dose} mg
               </div>
@@ -154,7 +180,7 @@ function DoseCalculatorPage() {
             margin: "24px auto 0",
           }}
         >
-          <span className="icon">⚠️</span> {text.expiredWarning}
+          {text.expiredWarning}
         </div>
       </div>
     </div>
