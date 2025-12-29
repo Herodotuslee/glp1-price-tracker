@@ -277,7 +277,7 @@ function PriceReportModal({ target, onClose }) {
               }}
               disabled={submitting || hasPendingDeletion}
             >
-              {hasPendingDeletion ? "刪除審核中" : "刪除診所（重複、不存在）"}
+              {hasPendingDeletion ? "刪除審核中" : "刪除重複診所"}
             </button>
           </div>
         </div>
