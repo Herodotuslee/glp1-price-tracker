@@ -2,6 +2,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/config/supabase";
 
+/**
+ * Format date (e.g. "2025-12-28") into zh-TW display.
+ * Falls back to raw string if parsing fails.
+ */
+const formatDate = (d) => {
+  if (!d) return "";
+  const dt = new Date(d);
+  if (Number.isNaN(dt.getTime())) return String(d);
+  return dt.toLocaleDateString("zh-TW", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
+
 function ClinicDetailModal({ open, clinicId, onClose }) {
   const [clinic, setClinic] = useState(null);
   const [notes, setNotes] = useState([]);
@@ -118,10 +133,24 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
             <div>找不到資料</div>
           ) : (
             <>
-              <div className="cdm-meta">
-                {clinic.city}
-                {clinic.district ? ` · ${clinic.district}` : ""} · {typeLabel}
-                {clinic.last_updated ? ` · 更新：${clinic.last_updated}` : ""}
+              {/* Meta line: left = city · district / type, right-top = updated */}
+              <div className="cdm-meta-line">
+                <div className="cdm-meta-text">
+                  {clinic.city}
+                  {clinic.district ? ` · ${clinic.district}` : ""}
+                  {" · "}
+                  {typeLabel}
+                </div>
+
+                {clinic.last_updated ? (
+                  <div
+                    className="cdm-meta-updated"
+                    title={`更新於 ${formatDate(clinic.last_updated)}`}
+                    aria-label={`更新於 ${formatDate(clinic.last_updated)}`}
+                  >
+                    更新於 {formatDate(clinic.last_updated)}
+                  </div>
+                ) : null}
               </div>
 
               <div className="cdm-section">
@@ -177,6 +206,33 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
         </div>
 
         <style>{`
+          /* --- Meta line (clean separators) --- */
+          .cdm-meta-line{
+            position: relative;
+            margin: 6px 0 14px;
+            font-size: 13px;
+            color: var(--ac-brown);
+            min-height: 20px;
+          }
+          .cdm-meta-text{
+            font-weight: 650;
+            letter-spacing: 0.2px;
+            padding-right: 140px; /* reserve space for top-right updated */
+            line-height: 20px;
+          }
+          .cdm-meta-updated{
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 12px;
+            opacity: 0.45;
+            font-weight: 650;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+          }
+
+          /* --- Prices --- */
           .cdm-price-grid{
             display:grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -199,9 +255,18 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
             font-size: 16px;
             font-weight: 900;
           }
+
           @media (max-width: 640px){
             .cdm-price-grid{
               grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .cdm-meta-text{
+              padding-right: 0;
+            }
+            .cdm-meta-updated{
+              position: static;
+              display: block;
+              margin-top: 4px;
             }
           }
         `}</style>
