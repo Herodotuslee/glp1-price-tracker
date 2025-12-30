@@ -1,5 +1,5 @@
 // src/components/PriceReportModal.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../config/supabase";
 import { CITY_LABELS, TYPE_LABELS } from "../data/prices";
 
@@ -15,8 +15,8 @@ const toNullableInt = (value) => {
 function PriceReportModal({ target, onClose }) {
   /**
    * mode:
-   * - update  -> original update flow
-   * - cleanup -> delete / duplicate / invalid data
+   * - update  -> report updates (creates a pending report)
+   * - cleanup -> delete / duplicate / invalid data (enqueue deletion request)
    */
   const [mode, setMode] = useState("update");
 
@@ -43,11 +43,14 @@ function PriceReportModal({ target, onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Whether a pending deletion already exists
+  // Whether a pending deletion already exists for this clinic
   const [hasPendingDeletion, setHasPendingDeletion] = useState(false);
 
   const isUpdate = mode === "update";
   const isCleanup = mode === "cleanup";
+
+  // Lock cleanup actions when someone already requested deletion
+  const isCleanupLocked = hasPendingDeletion;
 
   // ---------- Derived display ----------
   const cityLabel = CITY_LABELS[target?.city] || target?.city || "-";
@@ -61,6 +64,12 @@ function PriceReportModal({ target, onClose }) {
 
   const isClinicRenamed =
     !!originalClinic && !!editedClinic && originalClinic !== editedClinic;
+
+  const canSubmit = useMemo(() => {
+    if (submitting) return false;
+    if (isCleanup && isCleanupLocked) return false;
+    return true;
+  }, [submitting, isCleanup, isCleanupLocked]);
 
   // ---------- Init when target changes ----------
   useEffect(() => {
@@ -124,13 +133,14 @@ function PriceReportModal({ target, onClose }) {
 
     // ---------- Cleanup validation ----------
     if (isCleanup) {
-      if (note.trim() === "") {
-        setError("請填寫刪除原因。");
+      if (isCleanupLocked) {
+        // Hard-block: UI is disabled already, but keep this as a safety net
+        alert("⚠️ 此資料已經有人申請刪除，正在審核中。");
         return;
       }
 
-      if (hasPendingDeletion) {
-        alert("⚠️ 此資料已經有人申請刪除，正在審核中。");
+      if (note.trim() === "") {
+        setError("請填寫刪除原因。");
         return;
       }
     }
@@ -246,6 +256,7 @@ function PriceReportModal({ target, onClose }) {
     >
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2 className="modal-title">📝 價格回報單</h2>
+
         {/* Clinic context */}
         <p
           style={{
@@ -272,18 +283,29 @@ function PriceReportModal({ target, onClose }) {
             >
               回報更新
             </button>
+
             <button
               type="button"
               className={`filter-btn ${isCleanup ? "active" : ""}`}
               onClick={() => {
+                if (isCleanupLocked) return;
                 setMode("cleanup");
                 setNote("");
               }}
-              disabled={submitting || hasPendingDeletion}
+              // ✅ disable the cleanup mode button if someone already requested deletion
+              disabled={submitting || isCleanupLocked}
+              title={isCleanupLocked ? "此資料已有人申請刪除，正在審核中" : ""}
             >
-              {hasPendingDeletion ? "刪除審核中" : "刪除重複診所"}
+              {isCleanupLocked ? "刪除審核中" : "刪除重複診所"}
             </button>
           </div>
+
+          {/* Optional inline hint (looks nicer than alert-only) */}
+          {isCleanupLocked && (
+            <div className="modal-hint-warn" style={{ marginTop: 8 }}>
+              ⚠️ 此資料已有人申請刪除，正在審核中，暫時無法再次送出刪除請求。
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -295,6 +317,7 @@ function PriceReportModal({ target, onClose }) {
                 onChange={(e) => setNote(e.target.value)}
                 rows={4}
                 className="modal-textarea"
+                disabled={submitting || isCleanupLocked}
               />
             </div>
           )}
@@ -316,7 +339,7 @@ function PriceReportModal({ target, onClose }) {
                 )}
               </div>
 
-              {/* ✅ District editable (Update mode only) */}
+              {/* District editable (Update mode only) */}
               <div className="modal-field">
                 <label className="modal-label">📍 地區</label>
                 <input
@@ -328,7 +351,7 @@ function PriceReportModal({ target, onClose }) {
                 />
               </div>
 
-              {/* ---------- TYPE SELECT (KEY FIX) ---------- */}
+              {/* Type select */}
               <div className="modal-field">
                 <label className="modal-label">🏥 類型</label>
                 <select
@@ -389,8 +412,14 @@ function PriceReportModal({ target, onClose }) {
             >
               取消
             </button>
-            <button type="submit" className="btn-primary" disabled={submitting}>
-              {submitting ? "傳送中…" : "送出"}
+
+            {/* ✅ disable submit when cleanup is locked */}
+            <button type="submit" className="btn-primary" disabled={!canSubmit}>
+              {submitting
+                ? "傳送中…"
+                : isCleanup && isCleanupLocked
+                ? "不可送出"
+                : "送出"}
             </button>
           </div>
         </form>
