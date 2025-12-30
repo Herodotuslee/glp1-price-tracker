@@ -238,10 +238,14 @@ function PriceReportModal({ target, onClose }) {
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-card">
+    <div
+      className="modal-backdrop"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2 className="modal-title">📝 價格回報單</h2>
-
         {/* Clinic context */}
         <p
           style={{
