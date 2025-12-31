@@ -3,6 +3,14 @@ import React, { useState } from "react";
 import ClinicDetailModal from "@/components/ClinicDetailModal";
 import { Info } from "lucide-react";
 
+function formatDistrict(district) {
+  if (!district) return "";
+  if (district.length === 3 && district.endsWith("區")) {
+    return district.slice(0, 2);
+  }
+  return district;
+}
+
 function formatLastUpdated(value) {
   if (!value) return "";
   return value.slice(0, 10);
@@ -82,7 +90,9 @@ function PriceTable({ data, showAllDoses, onOpenReport }) {
                 <tr key={row.id}>
                   <td className="col-city">{row.city}</td>
 
-                  <td className="col-district">{row.district}</td>
+                  <td className="col-district">
+                    {formatDistrict(row.district)}
+                  </td>
 
                   <td
                     className="col-clinic"

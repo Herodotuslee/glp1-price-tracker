@@ -24,6 +24,14 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
     return "診所";
   };
 
+  function formatDistrict(district) {
+    if (!district) return "";
+    if (district.length === 3 && district.endsWith("區")) {
+      return district.slice(0, 2);
+    }
+    return district;
+  }
+
   const renderPriceItem = (dose, price) => {
     if (!price || price <= 0) return null;
     return (
@@ -52,7 +60,8 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
               <div>
                 <div className="clinic-name">{row.clinic}</div>
                 <div className="clinic-meta">
-                  {row.city} {row.district && `· ${row.district}`} ·{" "}
+                  {row.city}{" "}
+                  {row.district && `· ${formatDistrict(row.district)}`} ·{" "}
                   {typeLabel(row.type)}
                 </div>
               </div>
