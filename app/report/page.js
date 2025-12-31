@@ -228,7 +228,7 @@ function ReportPriceFormPage() {
               type="text"
               value={form.district}
               onChange={handleChange("district")}
-              placeholder="例如：大安區、楠梓區..."
+              placeholder="例如：大安、楠梓..."
               className="form-input"
             />
           </div>

@@ -82,12 +82,12 @@ function PricePage() {
   // Do NOT use this for filtering, only for display in the "X 個合法通路" sentence.
   const CITY_ALIAS = useMemo(
     () => ({
-      台北: "台北",
+      台北: "天龍國",
       新北: "新北",
       基隆: "雨都",
       桃園: "桃園",
       新竹: "風城",
-      苗栗國: "苗栗國",
+      苗栗: "苗栗國",
       台中: "大台中",
       彰化: "彰化",
       南投: "內地",
@@ -151,7 +151,7 @@ function PricePage() {
     "基隆",
     "桃園",
     "新竹",
-    "苗栗國",
+    "苗栗",
     "台中",
     "彰化",
     "南投",
@@ -348,12 +348,14 @@ function PricePage() {
             <br />
             {!loading && !error && (
               <span style={{ fontWeight: 800 }}>
-                {selectedCity === "all"
-                  ? "全國"
-                  : cityDisplayName(selectedCity)}
+                <span className="cute-count">
+                  {selectedCity === "all"
+                    ? "全國"
+                    : cityDisplayName(selectedCity)}
+                </span>
                 目前總共{" "}
-                <span style={{ fontWeight: 900 }}>{totalLocationCount}</span>{" "}
-                個合法通路可以購買唷！
+                <span className="cute-count">{totalLocationCount}</span>{" "}
+                個合法通路可以購買唷！希望大家一起告訴大家不要再和非法小蜜蜂購買！
               </span>
             )}
           </p>
@@ -557,7 +559,7 @@ function PricePage() {
               <div style={{ lineHeight: 1.7, fontWeight: 700, fontSize: 14 }}>
                 <p>
                   若價格明顯偏低，為提供單次施打服務之診所，拿大劑量打小劑量，表面上價格較低，實際上未必較為划算。
-                  島主認為肥胖應當成慢性病治療，並不鼓勵購買單次施打。
+                  島主認為肥胖應當成慢性病長期治療，除非有特殊理由，不然買整隻筆會比較好唷！
                 </p>
 
                 <p>
