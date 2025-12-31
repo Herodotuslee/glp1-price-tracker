@@ -19,12 +19,16 @@ export const metadata = {
   alternates: {
     canonical: "https://www.glp-1-taiwan.com/",
   },
+  // 設置 Google 搜尋顯示的小圖示 (Favicon)
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.png", type: "image/png" }, // 建議使用剛才幫您生成的綠色葉子圖
+      { url: "/favicon.ico", sizes: "any" }, // 備用傳統格式
+    ],
+    apple: "/apple-touch-icon.png", // 用於 iPhone 加入主畫面時的圖示
   },
   title: {
-    default: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
+    default: "猛健樂(Mounjaro)森友會｜一起變健康的好朋友",
     template: "%s｜台灣猛健樂資訊網",
   },
   verification: {
@@ -47,17 +51,17 @@ export const metadata = {
     "tirzepatide",
   ],
   openGraph: {
-    title: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
+    title: "猛健樂(Mounjaro)森友會｜一起變健康的好朋友",
     description:
       "全台猛健樂（Mounjaro）價格查詢、劑量計算器、FAQ、醫師文章與健康任務。",
     url: "https://www.glp-1-taiwan.com/",
-    siteName: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
+    siteName: "猛健樂(Mounjaro)森友會｜一起變健康的好朋友",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "台灣猛健樂資訊網",
+        alt: "台灣猛健樂資訊網 - 猛健樂森友會",
       },
     ],
     locale: "zh_TW",
@@ -65,18 +69,18 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "猛健樂(Mounjaro)森友會｜台灣猛健樂資訊網",
-    description: "全台診所資訊與自費價格公開透明。",
+    title: "猛健樂(Mounjaro)森友會｜一起變健康的好朋友",
+    description: "讓每個台灣人一起變更健康吧！。",
     images: ["/og-image.png"],
-  },
-  icons: {
-    icon: "/favicon.ico",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-Hant">
+      <head>
+        <link rel="icon" href="/google.png" type="image/png" />
+      </head>
       <body>
         <Navbar />
         <main>{children}</main>
