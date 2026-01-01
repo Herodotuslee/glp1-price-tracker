@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../../config/supabase";
 import { CITY_LABELS } from "../../data/prices";
 
@@ -41,6 +41,9 @@ function ReportPriceFormPage() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: string }
 
+  // Used to ensure the user sees the submission result right above the submit button.
+  const resultAnchorRef = useRef(null);
+
   const handleChange = (field) => (e) => {
     setForm((prev) => ({
       ...prev,
@@ -55,6 +58,16 @@ function ReportPriceFormPage() {
     return Number.isNaN(n) ? null : n;
   };
 
+  const scrollResultIntoView = () => {
+    // Bring the result banner (above the submit button) into view.
+    if (resultAnchorRef.current) {
+      resultAnchorRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
@@ -65,6 +78,7 @@ function ReportPriceFormPage() {
         type: "error",
         text: "請記得填寫城市和診所名稱喔！",
       });
+      scrollResultIntoView();
       return;
     }
 
@@ -80,6 +94,7 @@ function ReportPriceFormPage() {
         type: "error",
         text: "請至少告訴我一個劑量的價格吧 HOO！",
       });
+      scrollResultIntoView();
       return;
     }
 
@@ -125,15 +140,33 @@ function ReportPriceFormPage() {
         type: "success",
         text: "回報成功！狸克會把資料收好，審核後就會更新囉！",
       });
+
+      // Ensure the success message is visible right above the submit button.
+      scrollResultIntoView();
     } catch (err) {
       console.error("Submission failed:", err);
       setMessage({
         type: "error",
         text: "傳送失敗了... 請稍後再試試看！",
       });
+      scrollResultIntoView();
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const MessageBanner = () => {
+    if (!message) return null;
+
+    const baseClass =
+      message.type === "success"
+        ? "report-message report-message-success"
+        : "report-message report-message-error";
+
+    // Always render the banner in the "submit area" only.
+    return (
+      <div className={`${baseClass} report-message-sticky`}>{message.text}</div>
+    );
   };
 
   return (
@@ -168,19 +201,6 @@ function ReportPriceFormPage() {
           </ul>
         </div>
 
-        {/* Message Banner */}
-        {message && (
-          <div
-            className={`report-message ${
-              message.type === "success"
-                ? "report-message-success"
-                : "report-message-error"
-            }`}
-          >
-            {message.text}
-          </div>
-        )}
-
         {/* Form Card */}
         <form onSubmit={handleSubmit} className="report-form-card">
           {/* City */}
@@ -208,7 +228,7 @@ function ReportPriceFormPage() {
               type="text"
               value={form.district}
               onChange={handleChange("district")}
-              placeholder="例如：大安區、楠梓區..."
+              placeholder="例如：大安、楠梓..."
               className="form-input"
             />
           </div>
@@ -255,7 +275,7 @@ function ReportPriceFormPage() {
             <div className="price-section-header">
               <div className="price-section-title">💰 價格情報</div>
               <div className="price-section-subtitle">
-                請填寫單次費用 (NT$)，至少填一格喔！
+                請填寫單隻筆的費用 (NT$)，至少填一格喔！
               </div>
             </div>
 
@@ -289,6 +309,10 @@ function ReportPriceFormPage() {
               placeholder="有什麼想補充的嗎？"
             />
           </div>
+
+          {/* Message ABOVE the submit button (single place only) */}
+          <div ref={resultAnchorRef} />
+          <MessageBanner />
 
           {/* Submit Button */}
           <button

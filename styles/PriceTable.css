@@ -1,0 +1,163 @@
+/* ---------- Desktop Table Wrapper ---------- */
+
+.table-card {
+  background: var(--ac-paper);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  border: 2px solid var(--ac-brown);
+  box-shadow: var(--shadow-hard);
+}
+
+/* Horizontal scroll if many columns */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* ---------- Table Base ---------- */
+
+.price-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto; /* let columns size naturally */
+  font-size: 14px;
+}
+
+.price-table th {
+  background: var(--ac-green);
+  color: #fff;
+  padding: 10px;
+  white-space: nowrap;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 2px solid var(--ac-green-dark);
+}
+
+.price-table td {
+  padding: 10px;
+  border-bottom: 2px dashed #eee;
+  color: var(--ac-brown-dark);
+  vertical-align: top;
+}
+
+/* Zebra rows for readability */
+.price-table tbody tr:nth-child(odd) {
+  background: #fffdf8;
+}
+
+/* ---------- Column Tweaks ---------- */
+
+/* City column: compact, no wrap */
+.col-city {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* District column: do not grab too much width */
+.col-district {
+  font-size: 13px;
+  color: var(--ac-brown);
+  white-space: nowrap;
+  max-width: 80px; /* avoid pushing clinic name too much */
+}
+
+/* Clinic name column: make sure at least ~6 Chinese chars fit in one line */
+.col-clinic {
+  /* inline style still controls font-weight/size/line-height */
+}
+
+/* Only apply the width constraint on desktop / larger screens */
+@media (min-width: 768px) {
+  .col-clinic {
+    min-width: 6em; /* roughly space for 6 Chinese characters */
+  }
+}
+
+/* Type column */
+.col-type {
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* Highlight for main prices when showAllDoses = false */
+.col-price-highlight {
+  font-weight: 700;
+  color: var(--ac-green-dark);
+}
+
+/* Note column */
+.col-note {
+  max-width: 260px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Updated date */
+.col-updated {
+  font-size: 12px;
+  color: #777;
+  white-space: nowrap;
+}
+
+/* Edit button in table */
+.report-icon-btn {
+  border: none;
+  background: var(--ac-yellow);
+  color: var(--ac-brown-dark);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 1px 1px 0 var(--ac-brown);
+}
+
+/* Slight hover feedback */
+.report-icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Small screens: allow table to shrink a bit more */
+@media (max-width: 640px) {
+  .price-table th,
+  .price-table td {
+    padding: 8px;
+    font-size: 13px;
+  }
+}
+
+/* Clinic name cell layout (keeps table row height stable) */
+.clinic-name-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.clinic-name-text {
+  display: inline-block;
+  min-width: 0;
+}
+/* Minimal info icon button (no themed styling) */
+.clinic-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  background: transparent;
+  border: none;
+  color: var(--ac-brown-dark, #4b5563);
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+
+.clinic-info-btn:hover {
+  color: var(--ac-green, #059669);
+}
+
+.clinic-info-btn:active {
+  transform: scale(0.95);
+}

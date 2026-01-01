@@ -1,0 +1,223 @@
+/* =========================
+   No data
+   ========================= */
+.no-data-card {
+  background: var(--ac-paper);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  color: var(--ac-brown-dark);
+  border: 2px dashed #ccc;
+  margin-top: 16px;
+}
+
+/* =========================
+   Cards Container (SCROLL KEY)
+   ========================= */
+.card-list {
+  margin-top: 16px;
+
+  /* 🔑 Scroll must live here */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* 🔑 Prevent browser from treating vertical scroll as tap */
+  touch-action: pan-y;
+}
+
+/* =========================
+   Clinic Card
+   ========================= */
+.clinic-card {
+  background: var(--ac-paper);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 4px 0 #d0d0d0;
+  position: relative;
+
+  /* 🔑 DO NOT use overflow hidden on scrollable children */
+  overflow: visible;
+
+  /* 🔑 Prevent gesture hijacking */
+  touch-action: pan-y;
+}
+
+/* Left colored bar */
+.clinic-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--ac-green);
+  border-radius: 20px 0 0 20px;
+}
+
+/* =========================
+   Header
+   ========================= */
+.clinic-header {
+  margin-left: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.clinic-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ac-brown-dark);
+}
+
+.clinic-meta {
+  font-size: 13px;
+  color: var(--ac-brown);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* =========================
+   Detail icon button (ⓘ)
+   ========================= */
+.clinic-detail-icon-btn {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: var(--ac-brown);
+  font-weight: 900;
+
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 🔑 Avoid accidental scroll blocking */
+  touch-action: manipulation;
+}
+
+.clinic-detail-icon-btn:active {
+  transform: translateY(1px);
+}
+
+/* =========================
+   Prices grid
+   ========================= */
+.clinic-prices-grid {
+  margin-top: 12px;
+  margin-left: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.price-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--ac-green-light);
+  border: 1px solid var(--ac-green);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dose-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ac-green);
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+  border: 1px solid rgba(120, 177, 89, 0.3);
+}
+
+/* Tiny screens */
+@media (max-width: 360px) {
+  .clinic-prices-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   Notes
+   ========================= */
+.clinic-note {
+  margin: 12px 0 0 10px;
+  background: var(--ac-cream);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px dotted var(--ac-brown);
+  font-size: 13px;
+  color: var(--ac-brown-dark);
+
+  /* 🔑 Text areas should not eat scroll */
+  touch-action: pan-y;
+}
+
+.note-icon {
+  margin-right: 4px;
+}
+
+/* =========================
+   Footer
+   ========================= */
+.clinic-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 2px dashed #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.updated-date {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+}
+
+/* =========================
+   Update button
+   ========================= */
+.clinic-edit-btn {
+  margin-left: auto;
+  background: var(--ac-yellow);
+  color: var(--ac-brown-dark);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 2px solid var(--ac-orange);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  box-shadow: 2px 2px 0 var(--ac-brown);
+  cursor: pointer;
+
+  /* 🔑 Buttons should not block scroll */
+  touch-action: manipulation;
+}
+
+.clinic-edit-btn:hover {
+  transform: translateY(-2px);
+}
+
+.edit-icon {
+  font-size: 13px;
+}

@@ -209,3 +209,16 @@
   transform: none;
   box-shadow: none;
 }
+
+/* Rename warning hint */
+.modal-hint-warn {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  background: rgba(240, 146, 54, 0.12);
+  border: 1px dashed rgba(240, 146, 54, 0.6);
+  color: var(--ac-brown-dark);
+}
