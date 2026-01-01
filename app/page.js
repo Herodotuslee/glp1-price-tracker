@@ -25,7 +25,7 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 
 function PricePage() {
   console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log("KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0, 10));
+  console.log("KEY＝＝＝:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
   const [selectedCity, setSelectedCity] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
   const [keyword, setKeyword] = useState("");
