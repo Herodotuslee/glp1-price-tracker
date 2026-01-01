@@ -355,7 +355,7 @@ function PricePage() {
                 </span>
                 目前總共{" "}
                 <span className="cute-count">{totalLocationCount}</span>{" "}
-                個合法通路可以購買囉！請大家一起告訴大家不要再和非法小蜜蜂購買！
+                個合法通路可以購買囉！大家可以告訴大家不要找非法管道購買避免被騙！
               </span>
             )}
           </p>
