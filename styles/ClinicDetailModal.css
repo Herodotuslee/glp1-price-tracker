@@ -1,5 +1,6 @@
 /* src/styles/ClinicDetailModal.css */
 
+/* ---------- Overlay ---------- */
 .cdm-overlay {
   position: fixed;
   inset: 0;
@@ -12,6 +13,7 @@
   backdrop-filter: blur(2px);
 }
 
+/* ---------- Card ---------- */
 .cdm-card {
   width: min(760px, 100%);
   max-height: 85vh;
@@ -24,6 +26,7 @@
   color: #2b2b2b;
 }
 
+/* ---------- Header ---------- */
 .cdm-header {
   display: flex;
   align-items: center;
@@ -45,7 +48,7 @@
   border: 2.5px solid var(--ac-brown);
   color: var(--ac-brown);
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 900;
   cursor: pointer;
   border-radius: 50%;
   width: 36px;
@@ -62,10 +65,12 @@
   transform: rotate(90deg);
 }
 
+/* ---------- Body ---------- */
 .cdm-body {
   padding: 24px;
 }
 
+/* (Legacy, if you still use it anywhere) */
 .cdm-meta {
   font-size: 14px;
   margin-bottom: 16px;
@@ -77,6 +82,35 @@
   font-weight: 700;
 }
 
+/* ---------- Meta line (the one your JS uses) ---------- */
+.cdm-meta-line {
+  position: relative;
+  margin: 6px 0 14px;
+  font-size: 13px;
+  color: var(--ac-brown);
+  min-height: 20px;
+}
+
+.cdm-meta-text {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  padding-right: 140px; /* reserve space for top-right updated */
+  line-height: 20px;
+}
+
+.cdm-meta-updated {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 12px;
+  opacity: 0.55;
+  font-weight: 800;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ---------- Section ---------- */
 .cdm-section {
   margin-top: 20px;
 }
@@ -105,6 +139,55 @@
   color: var(--ac-brown-dark);
 }
 
+/* ===================================================================== */
+/* ✅ PRICE GRID (REBUILT)                                                */
+/* ===================================================================== */
+
+.cdm-price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Card look aligned with your note cards */
+.cdm-price-item {
+  background: var(--ac-paper);
+  border: 2px solid var(--ac-cream-dark);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 3px 3px 0 var(--ac-cream-dark);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cdm-price-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 4px 4px 0 var(--ac-cream-dark);
+}
+
+.cdm-price-dose {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  color: var(--ac-brown);
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+
+.cdm-price-val {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--ac-brown-dark);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* If value is "-" (you render it as plain text), keep it quieter */
+.cdm-price-val:where(:not(:has(strong))) {
+  /* harmless: does nothing if no strong, but keeps specificity stable */
+}
+
+/* ---------- Notes ---------- */
 .cdm-note-list {
   display: grid;
   gap: 12px;
@@ -120,7 +203,7 @@
 
 .cdm-note-meta {
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--ac-orange);
   margin-bottom: 6px;
 }
@@ -131,6 +214,7 @@
   color: var(--ac-brown-dark);
 }
 
+/* ---------- Footer ---------- */
 .cdm-footer {
   padding: 16px 24px;
   border-top: 3px dashed var(--ac-cream-dark);
@@ -163,6 +247,7 @@
   box-shadow: none;
 }
 
+/* ---------- Link ---------- */
 .clinic-name-link {
   background: transparent;
   border: 0;
@@ -179,4 +264,30 @@
 .clinic-name-link:hover {
   color: var(--ac-orange);
   text-decoration-color: var(--ac-orange);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .cdm-body {
+    padding: 18px;
+  }
+
+  .cdm-price-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cdm-price-val {
+    font-size: 16px;
+  }
+
+  .cdm-meta-text {
+    padding-right: 0;
+  }
+
+  .cdm-meta-updated {
+    position: static;
+    display: block;
+    margin-top: 4px;
+    opacity: 0.6;
+  }
 }

@@ -1,11 +1,29 @@
+"use client";
+
 // src/components/ClinicDetailModal.js
 import React, { useEffect, useMemo, useState } from "react";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/config/supabase";
 
-/**
- * Format date (e.g. "2025-12-28") into zh-TW display.
- * Falls back to raw string if parsing fails.
- */
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Tooltip,
+  CategoryScale,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  Tooltip,
+  CategoryScale
+);
+
+/* ---------------- helpers ---------------- */
+
 const formatDate = (d) => {
   if (!d) return "";
   const dt = new Date(d);
@@ -17,9 +35,109 @@ const formatDate = (d) => {
   });
 };
 
+const nfmt = (v) => new Intl.NumberFormat("zh-TW").format(v);
+
+const toValidDate = (d) => {
+  const x = new Date(d);
+  return Number.isNaN(x.getTime()) ? null : x;
+};
+
+/* ---------------- chart component ---------------- */
+/**
+ * ✅ Equal spacing on X axis:
+ * - Use CategoryScale (labels), not TimeScale.
+ * - Each record becomes one evenly spaced point.
+ * - Labels show date string only.
+ * - if points < 2 -> don't render chart
+ */
+function SingleDoseChart({ title, rows, priceKey, color }) {
+  const { labels, values } = useMemo(() => {
+    const safe = Array.isArray(rows) ? rows : [];
+    const pts = safe
+      .map((r) => {
+        const dt = toValidDate(r?.created_at);
+        const y = Number(r?.[priceKey]);
+        if (!dt || !Number.isFinite(y) || y <= 0) return null;
+        return { dt, y };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.dt - b.dt);
+
+    return {
+      labels: pts.map((p) => formatDate(p.dt)),
+      values: pts.map((p) => p.y),
+    };
+  }, [rows, priceKey]);
+
+  // ✅ Only render when we have at least 2 points
+  if (values.length < 2) return null;
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: title,
+        data: values,
+        borderColor: color,
+        backgroundColor: color,
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        fill: false,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: (items) => items?.[0]?.label || "",
+          label: (item) => `價格：${nfmt(item.parsed.y)} 元`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        type: "category",
+        ticks: {
+          autoSkip: true,
+          maxRotation: 0,
+          color: "rgba(0,0,0,0.55)",
+        },
+        grid: { color: "rgba(0,0,0,0.06)" },
+      },
+      y: {
+        ticks: {
+          color: "rgba(0,0,0,0.55)",
+          callback: (v) => nfmt(v),
+        },
+        grid: { color: "rgba(0,0,0,0.06)" },
+      },
+    },
+  };
+
+  return (
+    <div className="cdm-trend-card">
+      <div className="cdm-trend-title">{title}</div>
+      <div className="cdm-trend-canvas">
+        <Line data={data} options={options} />
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- main modal ---------------- */
+
 function ClinicDetailModal({ open, clinicId, onClose }) {
   const [clinic, setClinic] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [priceHistory, setPriceHistory] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
@@ -27,6 +145,7 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
     if (!open) {
       setClinic(null);
       setNotes([]);
+      setPriceHistory([]);
       setErr("");
       setLoading(false);
       return;
@@ -54,8 +173,27 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
         const clinicRows = await clinicRes.json();
         setClinic(clinicRows?.[0] || null);
 
+        const priceRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/clinic_drug_prices` +
+            `?mounjaro_data_id=eq.${clinicId}` +
+            `&is_deleted=eq.false` +
+            `&select=price5mg,price10mg,created_at` +
+            `&order=created_at.desc` +
+            `&limit=10`,
+          {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            signal: controller.signal,
+          }
+        );
+        if (!priceRes.ok) throw new Error("Failed to load price history");
+        const priceRows = await priceRes.json();
+        setPriceHistory(Array.isArray(priceRows) ? priceRows : []);
+
         const notesRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/mounjaro_notes?mounjaro_data_id=eq.${clinicId}&select=id,note,created_at,status,report_id,note_key&order=created_at.desc`,
+          `${SUPABASE_URL}/rest/v1/mounjaro_notes?mounjaro_data_id=eq.${clinicId}&select=id,note,created_at&order=created_at.desc`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -92,7 +230,7 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
     if (v == null || v === "" || Number.isNaN(Number(v))) return "-";
     const num = Number(v);
     if (!Number.isFinite(num) || num === 0) return "-";
-    return new Intl.NumberFormat("zh-TW").format(num);
+    return nfmt(num);
   };
 
   const priceItems = useMemo(() => {
@@ -106,6 +244,23 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
       { label: "15mg", key: "price15mg", value: clinic.price15mg },
     ];
   }, [clinic]);
+
+  const countValid = (key) =>
+    (priceHistory || [])
+      .map((r) => {
+        const dt = toValidDate(r?.created_at);
+        const y = Number(r?.[key]);
+        if (!dt || !Number.isFinite(y) || y <= 0) return null;
+        return 1;
+      })
+      .filter(Boolean).length;
+
+  const hasTrend5 = useMemo(() => countValid("price5mg") >= 2, [priceHistory]);
+  const hasTrend10 = useMemo(
+    () => countValid("price10mg") >= 2,
+    [priceHistory]
+  );
+  const showTrendSection = hasTrend5 || hasTrend10;
 
   if (!open) return null;
 
@@ -133,7 +288,6 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
             <div>找不到資料</div>
           ) : (
             <>
-              {/* Meta line: left = city · district / type, right-top = updated */}
               <div className="cdm-meta-line">
                 <div className="cdm-meta-text">
                   {clinic.city}
@@ -171,6 +325,51 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
                 </div>
               </div>
 
+              {showTrendSection ? (
+                <div className="cdm-section">
+                  <div className="cdm-section-title">
+                    價格趨勢（最近 10 筆）
+                  </div>
+
+                  {hasTrend5 ? (
+                    <SingleDoseChart
+                      title="5mg 價格趨勢"
+                      rows={priceHistory}
+                      priceKey="price5mg"
+                      color="#4A90E2"
+                    />
+                  ) : null}
+
+                  {hasTrend10 ? (
+                    <SingleDoseChart
+                      title="10mg 價格趨勢"
+                      rows={priceHistory}
+                      priceKey="price10mg"
+                      color="#F5A623"
+                    />
+                  ) : null}
+
+                  <style>{`
+                    .cdm-trend-card{
+                      background: rgba(255,255,255,0.70);
+                      border: 1px solid rgba(0,0,0,0.08);
+                      border-radius: 12px;
+                      padding: 10px;
+                      margin-top: 10px;
+                    }
+                    .cdm-trend-title{
+                      font-size: 13px;
+                      font-weight: 900;
+                      margin-bottom: 6px;
+                      color: var(--ac-brown-dark);
+                    }
+                    .cdm-trend-canvas{
+                      height: 210px;
+                    }
+                  `}</style>
+                </div>
+              ) : null}
+
               <div className="cdm-section">
                 <div className="cdm-section-title">地址</div>
                 <div className="cdm-section-content">
@@ -187,7 +386,7 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
                     {notes.map((n) => (
                       <div className="cdm-note-item" key={n.id}>
                         <div className="cdm-note-meta">
-                          {new Date(n.created_at).toLocaleString()}
+                          {new Date(n.created_at).toLocaleString("zh-TW")}
                         </div>
                         <div className="cdm-note-text">{n.note}</div>
                       </div>
@@ -195,6 +394,41 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
                   </div>
                 )}
               </div>
+
+              <style>{`
+                .cdm-meta-line{
+                  position: relative;
+                  margin: 6px 0 14px;
+                  font-size: 13px;
+                  color: var(--ac-brown);
+                  min-height: 20px;
+                }
+                .cdm-meta-text{
+                  font-weight: 650;
+                  letter-spacing: 0.2px;
+                  padding-right: 140px;
+                  line-height: 20px;
+                }
+                .cdm-meta-updated{
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  font-size: 12px;
+                  opacity: 0.45;
+                  font-weight: 650;
+                  white-space: nowrap;
+                  user-select: none;
+                  pointer-events: none;
+                }
+                @media (max-width: 640px){
+                  .cdm-meta-text{ padding-right: 0; }
+                  .cdm-meta-updated{
+                    position: static;
+                    display: block;
+                    margin-top: 4px;
+                  }
+                }
+              `}</style>
             </>
           )}
         </div>
@@ -204,72 +438,6 @@ function ClinicDetailModal({ open, clinicId, onClose }) {
             關閉
           </button>
         </div>
-
-        <style>{`
-          /* --- Meta line (clean separators) --- */
-          .cdm-meta-line{
-            position: relative;
-            margin: 6px 0 14px;
-            font-size: 13px;
-            color: var(--ac-brown);
-            min-height: 20px;
-          }
-          .cdm-meta-text{
-            font-weight: 650;
-            letter-spacing: 0.2px;
-            padding-right: 140px; /* reserve space for top-right updated */
-            line-height: 20px;
-          }
-          .cdm-meta-updated{
-            position: absolute;
-            top: 0;
-            right: 0;
-            font-size: 12px;
-            opacity: 0.45;
-            font-weight: 650;
-            white-space: nowrap;
-            user-select: none;
-            pointer-events: none;
-          }
-
-          /* --- Prices --- */
-          .cdm-price-grid{
-            display:grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap:10px;
-            margin-top:10px;
-          }
-          .cdm-price-item{
-            background: rgba(255,255,255,0.06);
-            border: 1px dashed rgba(255,255,255,0.18);
-            border-radius: 12px;
-            padding: 10px;
-          }
-          .cdm-price-dose{
-            font-size: 12px;
-            opacity: 0.85;
-            margin-bottom: 4px;
-            font-weight: 800;
-          }
-          .cdm-price-val{
-            font-size: 16px;
-            font-weight: 900;
-          }
-
-          @media (max-width: 640px){
-            .cdm-price-grid{
-              grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            .cdm-meta-text{
-              padding-right: 0;
-            }
-            .cdm-meta-updated{
-              position: static;
-              display: block;
-              margin-top: 4px;
-            }
-          }
-        `}</style>
       </div>
     </div>
   );

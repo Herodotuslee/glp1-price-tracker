@@ -23,26 +23,92 @@ import "@/styles/PriceReportModal.css";
 import "@/styles/ClinicDetailModal.css";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
+const NOTES_BATCH_SIZE = 150; // Tune as needed (smaller = more requests, larger = longer URL)
+const NOTES_FETCH_CAP = 1200; // Max number of clinics to fetch notes for (keeps it snappy)
+
+function chunkArray(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+function buildInFilter(ids) {
+  // PostgREST `in.(...)` needs values separated by commas
+  // UUIDs do not need quotes
+  return `in.(${ids.join(",")})`;
+}
+
+async function fetchLatestNotesMapByClinicIds(clinicIds, signal) {
+  const ids = (clinicIds || []).filter(Boolean);
+  if (!ids.length) return new Map();
+
+  const limited = ids.slice(0, NOTES_FETCH_CAP);
+  const batches = chunkArray(limited, NOTES_BATCH_SIZE);
+
+  const latest = new Map(); // data_id -> { note, created_at }
+
+  for (const batch of batches) {
+    const url =
+      `${SUPABASE_URL}/rest/v1/mounjaro_notes` +
+      `?select=mounjaro_data_id,note,created_at` +
+      `&status=eq.approved` +
+      `&is_deleted=eq.false` +
+      `&is_hidden=eq.false` +
+      `&mounjaro_data_id=${buildInFilter(batch)}` +
+      `&order=created_at.desc` +
+      `&limit=20000`;
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      signal,
+    });
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error(`notes fetch failed: ${res.status} ${t}`);
+    }
+
+    const rows = await res.json();
+
+    // Rows are ordered by created_at desc, so first-seen per data_id is the latest.
+    for (const r of rows || []) {
+      const id = r?.mounjaro_data_id;
+      if (!id) continue;
+      if (!latest.has(id)) {
+        latest.set(id, {
+          note: r?.note ?? null,
+          created_at: r?.created_at ?? null,
+        });
+      }
+    }
+  }
+
+  return latest;
+}
+
 function PricePage() {
-  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log("KEY＝＝＝:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
   const [selectedCity, setSelectedCity] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
   const [keyword, setKeyword] = useState("");
 
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingMain, setLoadingMain] = useState(true);
+  const [loadingNotes, setLoadingNotes] = useState(false);
   const [error, setError] = useState(null);
 
   const [showAllDoses, setShowAllDoses] = useState(false);
 
-  // ---------- SORT ----------
+  // Sort
   const [sortKey, setSortKey] = useState("min"); // min | price5mg | price10mg
   const [sortDir, setSortDir] = useState("asc"); // asc | desc
 
-  // ---------- SORT WARNING MODAL ----------
+  // Sort warning modal
   const [showSortWarning, setShowSortWarning] = useState(false);
-  const [pendingSort, setPendingSort] = useState(null); // { key: "price5mg"|"price10mg"|"min", dir:"asc"|"desc" }
+  const [pendingSort, setPendingSort] = useState(null);
 
   const requestSort = (key, dir = "asc") => {
     setPendingSort({ key, dir });
@@ -80,8 +146,7 @@ function PricePage() {
 
   const isMobile = useIsMobile(640);
 
-  // ---------- FUN CITY NAME (ONLY FOR THE HEADER LINE) ----------
-  // Do NOT use this for filtering, only for display in the "X 個合法通路" sentence.
+  // Display-only alias
   const CITY_ALIAS = useMemo(
     () => ({
       台北: "天龍國",
@@ -110,13 +175,14 @@ function PricePage() {
     return CITY_ALIAS[cityKey] || cityKey;
   };
 
-  // ---------- FETCH ----------
+  // Fetch main data first (render ASAP), then fetch latest notes in background.
   useEffect(() => {
+    const controller = new AbortController();
     let cancelled = false;
 
-    async function fetchData() {
+    async function fetchMainThenNotes() {
       try {
-        setLoading(true);
+        setLoadingMain(true);
         setError(null);
 
         const res = await fetch(
@@ -126,27 +192,61 @@ function PricePage() {
               apikey: SUPABASE_ANON_KEY,
               Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             },
+            signal: controller.signal,
           }
         );
 
         if (!res.ok) throw new Error("Network error");
         const data = await res.json();
-        if (!cancelled) setRows(data || []);
+
+        if (cancelled) return;
+
+        const baseRows = Array.isArray(data) ? data : [];
+        setRows(baseRows); // Render immediately
+
+        // Background notes enrichment
+        setLoadingNotes(true);
+
+        const ids = baseRows.map((r) => r?.id).filter(Boolean);
+        const notesMap = await fetchLatestNotesMapByClinicIds(
+          ids,
+          controller.signal
+        );
+
+        if (cancelled) return;
+
+        if (notesMap.size > 0) {
+          setRows((prev) =>
+            (prev || []).map((r) => {
+              const hit = notesMap.get(r.id);
+              if (!hit) return r;
+              // Override note with latest note from notes table
+              return { ...r, note: hit.note ?? r.note };
+            })
+          );
+        }
       } catch (err) {
+        if (cancelled) return;
         console.error(err);
-        if (!cancelled) setError("載入失敗，請稍後再試");
+        setError("載入失敗，請稍後再試");
+        setRows([]);
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoadingMain(false);
+          setLoadingNotes(false);
+        }
       }
     }
 
-    fetchData();
+    fetchMainThenNotes();
+
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, []);
 
-  // ---------- CITY OPTIONS ----------
+  // City options
   const CITY_ORDER = [
     "台北",
     "新北",
@@ -185,10 +285,7 @@ function PricePage() {
     return ["all", ...uniqueCities];
   }, [rows]);
 
-  // ---------- TOTAL COUNT (ALL TYPES) FOLLOW CITY ----------
-  // Counts all types (clinic/hospital/pharmacy/medical_aesthetic).
-  // Follows selectedCity ("all" => nationwide).
-  // Deduplicates by id first; fallback to (city|type|clinic).
+  // Total count (dedupe)
   const totalLocationCount = useMemo(() => {
     const seen = new Set();
 
@@ -208,7 +305,7 @@ function PricePage() {
     return seen.size;
   }, [rows, selectedCity]);
 
-  // ---------- SORT HELPER ----------
+  // Sort helper
   const getSortValue = (row) => {
     const n = (v) => {
       if (v === "" || v == null) return null;
@@ -232,7 +329,7 @@ function PricePage() {
     return prices.length ? Math.min(...prices) : null;
   };
 
-  // ---------- FILTER + SORT ----------
+  // Filter + sort
   const filteredAndSortedData = useMemo(() => {
     const filtered = rows.filter((row) => {
       return (
@@ -259,7 +356,7 @@ function PricePage() {
     });
   }, [rows, selectedCity, selectedType, keyword, sortKey, sortDir]);
 
-  // ---------- REPORT ----------
+  // Report modal
   const openReportModal = (row) => {
     setReportTarget(row);
     setReportError(null);
@@ -335,6 +432,8 @@ function PricePage() {
     }
   };
 
+  const showMainLoading = loadingMain && rows.length === 0;
+
   return (
     <div className="price-page-root">
       <div className="price-page-inner">
@@ -348,7 +447,7 @@ function PricePage() {
             <br />
             如果發現資訊有變動，歡迎協助回報更新喔！
             <br />
-            {!loading && !error && (
+            {!showMainLoading && !error && (
               <span style={{ fontWeight: 800 }}>
                 <span className="cute-count">
                   {selectedCity === "all"
@@ -365,7 +464,7 @@ function PricePage() {
 
         <div className="info-banner warning-block">{texts.disclaimer}</div>
 
-        {loading && <LoadingIndicator centered />}
+        {showMainLoading && <LoadingIndicator centered />}
         {error && <p className="status-text error">{error}</p>}
 
         <section className="control-card">
@@ -486,7 +585,7 @@ function PricePage() {
           </div>
         </section>
 
-        {!loading && !error && (
+        {!showMainLoading && !error && (
           <>
             {isMobile ? (
               <PriceCardList
@@ -537,7 +636,6 @@ function PricePage() {
           onClose={closeClinicDetail}
         />
 
-        {/* Sort warning modal */}
         {showSortWarning && (
           <div className="modal-backdrop" onClick={cancelSort}>
             <div
