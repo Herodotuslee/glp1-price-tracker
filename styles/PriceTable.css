@@ -101,22 +101,35 @@
   white-space: nowrap;
 }
 
-/* Edit button in table */
+/* Edit button in table - Animal Crossing style */
 .report-icon-btn {
-  border: none;
-  background: var(--ac-yellow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--ac-brown);
+  background: linear-gradient(180deg, #fff9e6 0%, #f8e286 100%);
   color: var(--ac-brown-dark);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 12px;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 14px;
   cursor: pointer;
   font-weight: 700;
-  box-shadow: 1px 1px 0 var(--ac-brown);
+  box-shadow: 2px 2px 0 rgba(124, 98, 69, 0.2);
+  transition: all 0.15s ease;
+  min-width: 28px;
+  min-height: 26px;
 }
 
-/* Slight hover feedback */
+/* Hover feedback */
 .report-icon-btn:hover {
-  transform: translateY(-1px);
+  background: linear-gradient(180deg, #fffaeb 0%, #fae89d 100%);
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 rgba(124, 98, 69, 0.25);
+}
+
+.report-icon-btn:active {
+  transform: translateY(0px);
+  box-shadow: 1px 1px 0 rgba(124, 98, 69, 0.2);
 }
 
 /* Small screens: allow table to shrink a bit more */
@@ -125,6 +138,26 @@
   .price-table td {
     padding: 8px;
     font-size: 13px;
+  }
+
+  /* Make report button smaller on mobile to match info button */
+  .report-icon-btn {
+    padding: 3px 6px;
+    min-width: 24px;
+    min-height: 22px;
+    border-width: 1.5px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 0 rgba(124, 98, 69, 0.2);
+  }
+
+  .report-icon-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .report-icon-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0 rgba(124, 98, 69, 0.25);
   }
 }
 
@@ -140,26 +173,75 @@
   display: inline-block;
   min-width: 0;
 }
-/* Minimal info icon button (no themed styling) */
+/* Animal Crossing-style info button */
 .clinic-info-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
-  background: transparent;
-  border: none;
-  color: var(--ac-brown-dark, #4b5563);
+  gap: 4px;
+  padding: 4px 8px;
+  background: linear-gradient(180deg, #fff9e6 0%, #f8e286 100%);
+  border: 2px solid var(--ac-brown);
+  border-radius: 10px;
+  color: var(--ac-brown-dark);
   cursor: pointer;
+  font-size: 16px;
   line-height: 1;
-  transition: color 0.15s ease, transform 0.1s ease;
+  box-shadow: 2px 2px 0 rgba(124, 98, 69, 0.2);
+  transition: all 0.15s ease;
+  min-width: 28px;
+  min-height: 26px;
+}
+
+/* Hide text on desktop, show only icon */
+.clinic-info-btn .btn-text {
+  display: none;
 }
 
 .clinic-info-btn:hover {
-  color: var(--ac-green, #059669);
+  background: linear-gradient(180deg, #fffaeb 0%, #fae89d 100%);
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 rgba(124, 98, 69, 0.25);
 }
 
 .clinic-info-btn:active {
-  transform: scale(0.95);
+  transform: translateY(0px);
+  box-shadow: 1px 1px 0 rgba(124, 98, 69, 0.2);
+}
+
+/* Mobile: make info button smaller and show text */
+@media (max-width: 640px) {
+  .clinic-info-btn {
+    padding: 3px 8px;
+    min-width: auto;
+    min-height: 22px;
+    border-width: 1.5px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 0 rgba(124, 98, 69, 0.2);
+    gap: 4px;
+  }
+
+  /* Show text on mobile */
+  .clinic-info-btn .btn-text {
+    display: inline;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .clinic-info-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  .clinic-info-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0 rgba(124, 98, 69, 0.25);
+  }
+
+  .clinic-name-cell {
+    gap: 6px;
+  }
 }
 
 .clinic-name-clickable {
