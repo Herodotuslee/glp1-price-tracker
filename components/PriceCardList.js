@@ -72,9 +72,9 @@ function PriceCardList({ data, showAllDoses, onOpenReport }) {
                 className="clinic-info-btn"
                 onClick={() => openDetailByRow(row)}
                 aria-label="查看診所詳細資訊"
-                title="查看詳情"
               >
                 <Info size={16} strokeWidth={2} />
+                <span className="info-text">查看詳情</span>
               </button>
             </div>
 
