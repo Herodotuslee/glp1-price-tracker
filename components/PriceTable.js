@@ -103,7 +103,14 @@ function PriceTable({ data, showAllDoses, onOpenReport }) {
                     }}
                   >
                     <span className="clinic-name-cell">
-                      <span className="clinic-name-text">{row.clinic}</span>
+                      <button
+                        type="button"
+                        className="clinic-name-text clinic-name-clickable"
+                        onClick={() => openDetailByRow(row)}
+                        aria-label={`查看 ${row.clinic} 的歷史價格與備註`}
+                      >
+                        {row.clinic}
+                      </button>
 
                       <button
                         type="button"
