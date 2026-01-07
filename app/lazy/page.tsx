@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 function LazyPage() {
   return (
@@ -40,7 +41,10 @@ function LazyPage() {
             height={600}
           />
           <p className="lazy-note">
-            💡 BMR (基礎代謝率) 可以參考 Inbody 機器測量，或是問問 GPT
+            💡 BMR (基礎代謝率) 可以參考 Inbody 機器測量，或是
+            <Link href="/bmr" className="ac-link">
+              使用本站 BMR 計算機
+            </Link>
             幫你估算喔！
           </p>
         </article>

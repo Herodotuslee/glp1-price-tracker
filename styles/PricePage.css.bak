@@ -1,0 +1,329 @@
+/* =========================
+   Page Layout
+========================= */
+
+:root {
+  /* Pastel Island (Atsumori Special Edition) Palette */
+  --ac-green: #88C9A1;       /* Pastel Green (Joy-Conish) */
+  --ac-green-light: #E0F2E0; /* Very Light Green */
+  --ac-blue: #78B3C3;        /* Pastel Blue (Joy-Conish) */
+  --ac-cream: #FDFCE0;       /* Base Cream */
+  --ac-paper: #FCFBF7;       /* Paper White */
+  --ac-brown: #7C6146;       /* Nook Brown */
+  --ac-brown-dark: #584432;  /* Darker Brown for text */
+  --ac-teal: #76B296;        /* Darker Green Accent */
+  --ac-orange: #F4A261;      /* Accent Orange */
+  
+  --shadow-soft: 0 4px 12px rgba(136, 201, 161, 0.15);
+  --shadow-hard: 4px 4px 0 rgba(124, 97, 70, 0.1);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+}
+
+.price-value {
+  font-weight: 800;
+  color: var(--ac-teal);
+  font-family: "Nunito", sans-serif;
+}
+
+.price-page-root {
+  min-height: 100vh;
+  padding: 20px 16px;
+  
+  /* Atsumori Grass/Triangle Pattern */
+  background-color: var(--ac-green-light);
+  background-image: 
+    linear-gradient(45deg, #95D5B2 25%, transparent 25%, transparent 75%, #95D5B2 75%, #95D5B2),
+    linear-gradient(45deg, #95D5B2 25%, transparent 25%, transparent 75%, #95D5B2 75%, #95D5B2);
+  background-position: 0 0, 20px 20px;
+  background-size: 40px 40px;
+  background-attachment: fixed;
+  
+  /* Overlay to soften the pattern (make it subtle like the game) */
+  position: relative;
+  z-index: 1;
+
+  font-family: "Nunito", "Varela Round", system-ui, sans-serif;
+  color: var(--ac-brown-dark);
+}
+
+/* Ensure content is above the pseudo-element if we used one, 
+   but here we just use background directly. 
+   Let's make it more subtle with an opacity trick or just lighter colors.
+   The above hex codes are adjusted to be subtle. */
+
+.price-page-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* =========================
+   Header
+========================= */
+
+.page-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ac-brown-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  background: var(--ac-yellow);
+  padding: 6px 20px;
+  border-radius: 999px;
+  border: 3px dashed var(--ac-orange);
+  transform: rotate(-1deg);
+}
+
+.page-subtitle-text {
+  font-size: 14px;
+  color: var(--ac-brown);
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+/* =========================
+   Info Banners
+========================= */
+
+.warning-block {
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 2px dashed #e17055;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  box-shadow: var(--shadow-hard);
+}
+
+.warning-block.small {
+  background: #fff5f5;
+  padding: 10px;
+  border: 2px dashed #ffbca8;
+}
+
+/* =========================
+   Control Board
+========================= */
+
+.control-card {
+  background: var(--ac-paper);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 2px solid var(--ac-green);
+  box-shadow: var(--shadow-hard);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* tighter, cleaner */
+  position: relative;
+}
+
+/* Tape Decoration */
+.control-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 50px;
+  height: 18px;
+  background: rgba(200, 200, 200, 0.4);
+  transform: translateX(-50%) rotate(1deg);
+}
+
+/* =========================
+   Divider (dashed, compact)
+========================= */
+
+.pp-divider {
+  width: 100%;
+  height: 0;
+  border-top: 1px dashed rgba(46, 125, 93, 0.45); /* green-ish */
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* =========================
+   Filters
+========================= */
+
+.filter-row {
+  width: 100%;
+}
+
+.filter-wrap-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  row-gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* =========================
+   Filter Buttons
+========================= */
+
+.filter-btn {
+  border-radius: 999px;
+  border: 2px solid var(--ac-green);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  background: #fff;
+  color: var(--ac-green);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: var(--ac-green);
+  color: #fff;
+  box-shadow: 0 2px 0 var(--ac-brown);
+  transform: translateY(0);
+}
+
+/* =========================
+   Sort Chips (prettier)
+========================= */
+
+.sort-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ac-brown-dark);
+  opacity: 0.75;
+  margin-right: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sort-chip {
+  border-style: dashed;
+  border-color: var(--ac-teal);
+  color: var(--ac-teal);
+  background: #f0fcfc;
+  padding: 7px 12px;
+  font-size: 13px;
+  box-shadow: 0 2px 0 rgba(42, 165, 165, 0.18);
+}
+
+.sort-chip:hover {
+  transform: translateY(-2px) rotate(-0.4deg);
+}
+
+.sort-chip.active {
+  background: var(--ac-teal);
+  color: #fff;
+  border-color: var(--ac-teal);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+  transform: translateY(0);
+}
+
+/* =========================
+   Search
+========================= */
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 4px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--ac-teal);
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border-radius: 999px;
+  border: 2px solid var(--ac-teal);
+  font-size: 14px;
+  font-family: inherit;
+  background: #f0fcfc;
+  outline: none;
+  color: var(--ac-brown-dark);
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(42, 165, 165, 0.15);
+}
+
+/* =========================
+   Modal
+========================= */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  border: 4px solid var(--ac-teal);
+  box-shadow: 0 8px 0 rgba(42, 165, 165, 0.4);
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 640px) {
+  .modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-card {
+    padding: 14px;
+    gap: 10px;
+  }
+}
+
+.cute-count {
+  font-weight: 900;
+  color: var(--ac-green);
+  background: rgba(124, 181, 24, 0.12);
+  padding: 2px 6px;
+  border-radius: 8px;
+  box-shadow: 0 2px 0 rgba(124, 181, 24, 0.25);
+}
+
+
