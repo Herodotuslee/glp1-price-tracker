@@ -13,6 +13,7 @@ import "../styles/BmrPage.css";
 
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
+import { Analytics } from "@vercel/analytics/next";
 
 const siteUrl = "https://www.glp-1-taiwan.com";
 
@@ -93,6 +94,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <Analytics />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
