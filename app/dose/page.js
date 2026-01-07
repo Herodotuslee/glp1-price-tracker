@@ -182,6 +182,24 @@ function DoseCalculatorPage() {
         >
           {text.expiredWarning}
         </div>
+
+        <div
+          className="info-banner warning-block"
+          style={{
+            marginTop: "12px",
+            maxWidth: "420px",
+            margin: "12px auto 0",
+            backgroundColor: "#fffdf0", // Light cream to distinguish from red warning if needed, or keep same class
+            border: "2px solid var(--ac-orange)",
+          }}
+        >
+          <div style={{ fontWeight: 800, marginBottom: "4px", color: "var(--ac-brown-dark)" }}>
+            ⚠️ 關於殘劑抽取
+          </div>
+          <div style={{ fontSize: "14px", lineHeight: "1.6", color: "#555" }}>
+            若使用胰島素空針抽取殘劑，需特別注意施打深度。若針頭刺入過深（誤入肌肉層），可能會影響藥物吸收與療效。專業醫護較能精準掌握皮下注射的位置，因此若情況允許，建議請專業醫護人員協助施打會比較安全喔！
+          </div>
+        </div>
       </div>
     </div>
   );
