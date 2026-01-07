@@ -18,7 +18,8 @@ function BmrPage() {
     // Men: (10 × weight) + (6.25 × height) - (5 × age) + 5
     // Women: (10 × weight) + (6.25 × height) - (5 × age) - 161
 
-    let bmr = 10 * parseFloat(weight) + 6.25 * parseFloat(height) - 5 * parseFloat(age);
+    let bmr =
+      10 * parseFloat(weight) + 6.25 * parseFloat(height) - 5 * parseFloat(age);
 
     if (gender === "male") {
       bmr += 5;
@@ -28,7 +29,9 @@ function BmrPage() {
 
     setResult({
       bmr: Math.round(bmr),
-      bmi: (parseFloat(weight) / Math.pow(parseFloat(height) / 100, 2)).toFixed(1),
+      bmi: (parseFloat(weight) / Math.pow(parseFloat(height) / 100, 2)).toFixed(
+        1
+      ),
     });
   };
 
@@ -42,11 +45,23 @@ function BmrPage() {
           <p className="page-subtitle-text">
             輸入您的身體數值，計算基礎代謝率 (BMR) 與身體質量指數 (BMI)。
           </p>
-          <div className="bmr-citation-box" style={{ marginTop: "16px", fontSize: "0.85rem", color: "#666", background: "rgba(255,255,255,0.6)", padding: "12px", borderRadius: "12px", border: "1px dashed #ccc" }}>
+          <div
+            className="bmr-citation-box"
+            style={{
+              marginTop: "16px",
+              fontSize: "0.85rem",
+              color: "#666",
+              background: "rgba(255,255,255,0.6)",
+              padding: "12px",
+              borderRadius: "12px",
+              border: "1px dashed #ccc",
+            }}
+          >
             <p style={{ margin: 0, lineHeight: "1.5" }}>
-              * 本計算採用 <strong>Mifflin-St. Jeor)</strong> 標準公式。
-              <br/>
-              由於每個人<strong>肌肉量、體脂率與基因</strong>不同，計算結果<strong>僅為估計值</strong>，實際代謝率因人而異。
+              * 本計算採用 <strong>Mifflin-St. Jeor</strong> 標準公式。
+              <br />
+              由於每個人<strong>肌肉量、體脂率與基因</strong>不同，計算結果
+              <strong>僅為估計值</strong>，實際代謝率因人而異。
             </p>
           </div>
         </header>
@@ -142,14 +157,13 @@ function BmrPage() {
               <div className="bmr-divider"></div>
 
               <div className="bmr-result-title">您的身體質量指數 (BMI)</div>
-              <div className="bmr-value tdee-value">
-                {result.bmi}
-              </div>
+              <div className="bmr-value tdee-value">{result.bmi}</div>
 
               <div className="bmr-disclaimer">
                 <strong>請注意：公式無法計算「肌肉量」與「體脂率」。</strong>
                 <br />
-                同樣體重的人，肌肉量越多，實際 BMR 會越高。因此若您有在重訓或體脂較低，此公式可能會低估您的代謝率；反之若體脂較高，則可能高估。
+                同樣體重的人，肌肉量越多，實際 BMR
+                會越高。因此若您有在重訓或體脂較低，此公式可能會低估您的代謝率；反之若體脂較高，則可能高估。
               </div>
             </div>
           )}
@@ -161,24 +175,30 @@ function BmrPage() {
           </h2>
           <div className="bmr-info-card">
             <p className="bmr-info-intro">
-              根據 <strong>Cleveland Clinic</strong> 與 <strong>Mayo Clinic</strong> 指出，除了公式中的變數外，以下生理因素也會顯著影響代謝率：
+              根據 <strong>Cleveland Clinic</strong> 與{" "}
+              <strong>Mayo Clinic</strong>{" "}
+              指出，除了公式中的變數外，以下生理因素也會顯著影響代謝率：
             </p>
             <ul className="bmr-factor-list">
               <li>
                 <strong>瘦體組織 (Muscle Mass)：</strong> <br />
-                影響最大。肌肉組織消耗的熱量遠高於脂肪。肌肉量越高，靜止代謝率 (RMR) 越高。
+                影響最大。肌肉組織消耗的熱量遠高於脂肪。肌肉量越高，靜止代謝率
+                (RMR) 越高。
               </li>
               <li>
                 <strong>體型 (Body Size)：</strong> <br />
-                體表面積越大（高大或體重較重），需消耗更多能量維持體溫與運作，因此 BMR 較高。
+                體表面積越大（高大或體重較重），需消耗更多能量維持體溫與運作，因此
+                BMR 較高。
               </li>
               <li>
                 <strong>荷爾蒙 (Hormones)：</strong> <br />
-                甲狀腺素 (Thyroxin) 直接調控代謝速度。甲狀腺亢進會大幅提高 BMR，低下則會降低。
+                甲狀腺素 (Thyroxin) 直接調控代謝速度。甲狀腺亢進會大幅提高
+                BMR，低下則會降低。
               </li>
               <li>
                 <strong>健康狀況 (Health Status)：</strong> <br />
-                發燒或受傷時，身體需消耗能量修復組織與對抗感染。體溫每升高 1°C，BMR 約提升 7-10%。
+                發燒或受傷時，身體需消耗能量修復組織與對抗感染。體溫每升高
+                1°C，BMR 約提升 7-10%。
               </li>
             </ul>
           </div>
