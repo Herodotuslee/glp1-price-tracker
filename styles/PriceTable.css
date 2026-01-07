@@ -102,34 +102,33 @@
 }
 
 /* Edit button in table - Animal Crossing style */
+/* Edit button in table */
 .report-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--ac-brown);
-  background: linear-gradient(180deg, #fff9e6 0%, #f8e286 100%);
+  border: none;
+  background: var(--ac-yellow);
   color: var(--ac-brown-dark);
-  border-radius: 10px;
-  padding: 4px 8px;
-  font-size: 14px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
   cursor: pointer;
   font-weight: 700;
-  box-shadow: 2px 2px 0 rgba(124, 98, 69, 0.2);
-  transition: all 0.15s ease;
-  min-width: 28px;
-  min-height: 26px;
+  box-shadow: 1px 1px 0 var(--ac-brown);
+  transition: transform 0.1s ease;
+  min-width: auto;
+  min-height: auto;
+  display: inline-block;
 }
 
-/* Hover feedback */
+/* Slight hover feedback */
 .report-icon-btn:hover {
-  background: linear-gradient(180deg, #fffaeb 0%, #fae89d 100%);
-  transform: translateY(-2px);
-  box-shadow: 3px 3px 0 rgba(124, 98, 69, 0.25);
+  transform: translateY(-1px);
+  background: var(--ac-yellow); /* Ensure background doesn't change unexpectedly */
+  box-shadow: 1px 1px 0 var(--ac-brown);
 }
 
 .report-icon-btn:active {
   transform: translateY(0px);
-  box-shadow: 1px 1px 0 rgba(124, 98, 69, 0.2);
+  box-shadow: none;
 }
 
 /* Small screens: allow table to shrink a bit more */
@@ -140,13 +139,13 @@
     font-size: 13px;
   }
 
-  /* Make report button smaller on mobile to match info button */
+  /* Make report button consistent on mobile */
   .report-icon-btn {
-    padding: 3px 6px;
-    min-width: 24px;
-    min-height: 22px;
+    padding: 3px;
+    width: 24px;
+    height: 24px;
     border-width: 1.5px;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 1px 1px 0 rgba(124, 98, 69, 0.2);
   }
 
