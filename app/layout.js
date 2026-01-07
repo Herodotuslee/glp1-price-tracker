@@ -93,6 +93,22 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "猛健樂(Mounjaro)森友會",
+              url: "https://www.glp-1-taiwan.com",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://www.glp-1-taiwan.com/?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
       </body>
     </html>
   );
