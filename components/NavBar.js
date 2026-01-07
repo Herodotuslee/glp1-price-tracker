@@ -112,6 +112,15 @@ function Navbar() {
             </li>
             <li>
               <Link
+                href="/bmr"
+                className={linkClass("/bmr")}
+                onClick={closeMenu}
+              >
+                BMR 計算
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/report"
                 className={linkClass("/report")}
                 onClick={closeMenu}

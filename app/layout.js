@@ -9,6 +9,7 @@ import "../styles/HealthPage.css";
 import "../styles/ThreadsPage.css";
 import "../styles/AdvancedPage.css";
 import "../styles/ReportPriceFormPage.css";
+import "../styles/BmrPage.css";
 
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";

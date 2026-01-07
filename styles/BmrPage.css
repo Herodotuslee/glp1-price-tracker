@@ -1,0 +1,261 @@
+.bmr-page-root {
+  min-height: 100vh;
+  background-color: var(--ac-cream);
+  padding-bottom: 40px;
+}
+
+.bmr-page-inner {
+  max-width: 500px; /* Compact */
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+.bmr-container {
+  background-color: var(--ac-paper);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  box-shadow: 0 4px 12px rgba(124, 98, 69, 0.08);
+  border: 1px solid rgba(124, 98, 69, 0.1);
+}
+
+.bmr-form-group {
+  margin-bottom: 20px;
+}
+
+.bmr-label {
+  display: block;
+  font-weight: 600;
+  color: var(--ac-brown-dark);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.bmr-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.input-suffix-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-suffix-group .bmr-input {
+  width: 100%;
+  padding-right: 32px; /* Space for suffix */
+}
+
+.suffix {
+  position: absolute;
+  right: 12px;
+  color: #999;
+  font-size: 0.8rem;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.bmr-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: var(--ac-brown-dark);
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.bmr-input:focus {
+  outline: none;
+  border-color: var(--ac-teal);
+  box-shadow: 0 0 0 3px rgba(42, 165, 165, 0.15);
+}
+
+.bmr-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: var(--ac-brown-dark);
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c6245' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.bmr-radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.bmr-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--ac-brown-dark);
+  font-size: 0.95rem;
+}
+
+.bmr-radio-input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ac-teal);
+}
+
+.bmr-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--ac-green);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+
+.bmr-btn:hover {
+  background-color: #69a54a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+.bmr-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bmr-result-card {
+  margin-top: 32px;
+  background-color: #f8fbff;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid #e1e8ed;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.bmr-result-title {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.bmr-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--ac-green);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.tdee-value {
+  font-size: 2rem;
+  color: var(--ac-orange);
+}
+
+.bmr-unit {
+  font-size: 1rem;
+  color: #888;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.bmr-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 20px 0;
+}
+
+.bmr-disclaimer {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  color: #999;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 400px) {
+  /* Only stack on very small screens, otherwise 3 cols fits fine */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- New Medical Info Section --- */
+.bmr-info-section {
+  margin-top: 40px;
+  max-width: 600px; /* Slightly wider than calculator for better reading */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bmr-section-title {
+  text-align: center;
+  font-size: 1.25rem;
+  color: var(--ac-brown-dark);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bmr-info-card {
+  background-color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(124, 98, 69, 0.05);
+  border: 1px solid rgba(124, 98, 69, 0.1);
+}
+
+.bmr-info-intro {
+  margin-bottom: 20px;
+  color: var(--ac-brown-dark);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.bmr-factor-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bmr-factor-list li {
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #555;
+  padding-left: 16px;
+  border-left: 3px solid var(--ac-green);
+}
+
+.bmr-factor-list li:last-child {
+  margin-bottom: 0;
+}
+
+.bmr-factor-list strong {
+  color: var(--ac-brown-dark);
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 4px;
+}
