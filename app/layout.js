@@ -53,6 +53,11 @@ export const metadata = {
     "自費",
     "診所",
     "tirzepatide",
+    "BMR計算",
+    "基礎代謝率",
+    "TDEE",
+    "每日消耗熱量",
+    "減重計算",
   ],
 
   openGraph: {
